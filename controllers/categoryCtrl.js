@@ -45,7 +45,7 @@ const categoryCtrl = {
       // only admin can create, update and delete category
       const name = req.body.name
       await Category.findByIdAndUpdate({ _id: req.params.id }, {name})
-      res.json({ msg: 'Category has been updated'})
+      res.status(200).json({ msg: 'Category has been updated'})
       
     } catch (err) {
       return res.status(500).json({ msg: err.message })
