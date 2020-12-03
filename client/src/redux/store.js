@@ -1,12 +1,16 @@
 import { createStore, combineReducers, applyMiddleware, compose,} from "redux"
 import thunk from 'redux-thunk'
+import { authReducer } from "./auth-reducer"
 
 import { mainReducer } from "./main-reducer"
 import { productsReducer } from "./products-reducer"
+import { usersReducer } from "./user-reducer"
 
 
 const appReducer = combineReducers({
     app: mainReducer,
+    auth: authReducer,
+    user: usersReducer,
     products: productsReducer,
  })
 

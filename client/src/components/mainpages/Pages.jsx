@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Switch } from "react-router-dom"
 
 import { Login } from './auth/Login'
-import { Register } from './auth/Register'
+import { Registration } from './auth/Registration'
 import { Cart } from './cart/Cart'
 import { Products } from './products/Products'
 import { ProductDetail } from './productDetail/ProductDetail'
@@ -17,7 +17,7 @@ export const Pages = () => {
                 <Route path="/detail/:id" exact component={ProductDetail} />
 
                 <Route path="/login" exact component={Login} />
-                <Route path="/register" exact component={Register} />
+                <Route path="/register" exact component={Registration} />
                 <Route path="/cart" exact component={Cart} />
 
 

@@ -13,8 +13,8 @@ import { Grid } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
 
 const useStyles = makeStyles({
-    root: {
-        // maxWidth: 345,
+    imageCard: {
+        objectFit: 'contain'
     },
 });
 
@@ -24,8 +24,9 @@ export const ProductItem = (props) => {
     return (
         <Grid item xs={12} sm={6} md={4}>
             <Card className={classes.root}>
-                <CardActionArea>
+                <CardActionArea component={RouterLink} to={`/detail/${props._id}`}>
                     <CardMedia
+                        className={classes.imageCard}
                         component="img"
                         alt={props.title}
                         height="200"
@@ -33,13 +34,13 @@ export const ProductItem = (props) => {
                         title={props.title}
                     />
                     <CardContent>
-                        <Typography variant="h5" component="h2">
+                        <Typography variant="h5" component="h2" noWrap>
                             {props.title}
                         </Typography>
                         <Typography variant="h6" color='secondary' component="p">
                             {props.price}
                         </Typography>
-                        <Typography variant="body2" color="textSecondary" component="p">
+                        <Typography variant="body2" color="textSecondary" component="p" noWrap>
                             {props.description}
                         </Typography>
                     </CardContent>

@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Login = () => {
+export const Registration = () => {
   const classes = useStyles();
 
   return (
@@ -47,7 +47,7 @@ export const Login = () => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Login
+          Registration
         </Typography>
 
         <Formik
@@ -56,15 +56,28 @@ export const Login = () => {
             password: ''
           }}
           onSubmit={async (values) => {
-            const result = await authAPI.login(values)
-            if (result) alert(result)
+            const err = await authAPI.registration(values)
+            if(err) alert(err)
           }}
         >
           {({ isSubmitting }) => (
             <Form className={classes.form}>
-              <Field
-                name="email"
-                placeholder="jane@acme.com"
+              <Field 
+                name="name" 
+                placeholder="enter you name" 
+                type="text"
+                label='Name'
+                component={TextField}
+
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                id="name"
+                // autoFocus
+              />
+              <Field 
+                name="email" 
+                placeholder="jane@acme.com" 
                 type="email"
                 label='Email'
                 component={TextField}
@@ -74,12 +87,11 @@ export const Login = () => {
                 fullWidth
                 id="email"
                 autoComplete="email"
-                autoFocus
+                // autoFocus
               />
-
-              <Field
-                name="password"
-                placeholder="password"
+              <Field 
+                name="password" 
+                placeholder="password" 
                 type="password"
                 label="Password"
                 component={TextField}
@@ -98,13 +110,10 @@ export const Login = () => {
                   color="primary"
                   disabled={isSubmitting}
                 >
-                  Login
+                  Register
                   </Button>
-                <Button component={RouterLink} color="secondary" to='/register'>Registration</Button>
+                <Button component={RouterLink} color="secondary" to='/login'>Login</Button>
               </ButtonGroup>
-              {/* <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link> */}
             </Form>
           )}
         </Formik>

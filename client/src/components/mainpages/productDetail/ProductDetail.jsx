@@ -20,6 +20,13 @@ const useStyles = makeStyles({
         width: "100%",
         margin: '0 auto'
     },
+    imageCard: {
+        objectFit: 'contain'
+    },
+    contentHeader: {
+        display: 'flex',
+        justifyContent: 'space-between'
+    }
 });
 
 export const ProductDetail = () => {
@@ -39,18 +46,19 @@ export const ProductDetail = () => {
     if (detailProduct.length === 0) return null
     return (
         <>
-            <Card className={classes.root} component={Grid} container spacing={6}>
+            <Card className={classes.root} component={Grid} container spacing={3}>
                 <Grid item xs={12} sm={7}>
                     <CardMedia
+                        className={classes.imageCard}
                         component="img"
                         alt={detailProduct.title}
-                        height="300"
+                        height="350"
                         image={detailProduct.images.url}
                         title={detailProduct.title}
                     />
                 </Grid>
                 <CardContent component={Grid} item xs={12} sm={5}>
-                    <Box style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Box className={classes.contentHeader}>
                         <Typography variant="h4" component="h2" color='textPrimary'>
                             {detailProduct.title}
                         </Typography>
@@ -59,10 +67,10 @@ export const ProductDetail = () => {
                         </Typography>
                     </Box>
 
-                    <Typography variant="h6" color='secondary' component="p">
+                    <Typography variant="h6" color='secondary' component="p" >
                         {`$ ${detailProduct.price}`}
                     </Typography>
-                    <Typography variant="body2" color="textSecondary" component="p">
+                    <Typography variant="body2" color="textSecondary" component="p" paragraph>
                         {detailProduct.description}
                     </Typography>
                     <Typography variant="body2" color="textSecondary" component="p">
@@ -74,6 +82,11 @@ export const ProductDetail = () => {
                     </Button>
                     </CardActions>
                 </CardContent>
+                <Grid item xs={12}>
+                    <Typography variant="body1" color="textPrimary" component="p" paragraph>
+                        {detailProduct.content}
+                    </Typography>
+                </Grid>
             </Card>
 
             <Box>

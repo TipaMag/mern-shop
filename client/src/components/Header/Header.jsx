@@ -17,6 +17,8 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { Link as RouterLink } from 'react-router-dom';
 
 import { LeftMobileMenu } from './LeftMobileMenu'
+import { useDispatch, useSelector } from 'react-redux';
+import { Logout } from '../../redux/auth-reducer';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -59,14 +61,15 @@ const useStyles = makeStyles((theme) => ({
 
 export const Header = () => {
   const classes = useStyles();
+  const dispatch = useDispatch()
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  const [isAuth, setAuth] = useState(false)
-  const [isAdmin, setAdmin] = useState(false)
+  const isAuth = useSelector(state => state.auth.isAuth)
+  const isAdmin = useSelector(state => state.user.isAdmin)
 
   const [isOpen, setOpen] = useState(false)
 
@@ -91,6 +94,10 @@ export const Header = () => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const handleLogout = () => {
+    dispatch(Logout())
+  }
+
   const menuId = 'primary-account-menu';
   const renderMenu = (
     <Menu
@@ -103,7 +110,7 @@ export const Header = () => {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Log out</MenuItem>
+      <MenuItem onClick={() => {handleMenuClose(); handleLogout()}}>Log out</MenuItem>
     </Menu>
   );
 
