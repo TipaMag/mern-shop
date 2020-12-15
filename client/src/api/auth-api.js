@@ -3,24 +3,18 @@ import axios from 'axios';
 export const authAPI = {
     async registration(user) {
         try {
-            await axios.post('/user/register', {...user})
-
-            localStorage.setItem('firstLogin', true)
-
-            window.location.href = '/'
+            const { data, status } =  await axios.post('/user/register', { ...user })
+            return { data, status }
         } catch (err) {
-            return err.response.data.msg
+            return err.response
         }
     },
     async login(user) {
         try {
-            await axios.post('/user/login', {...user})
-
-            localStorage.setItem('firstLogin', true)
-
-            window.location.href = '/'
+            const { data, status } = await axios.post('/user/login', { ...user })
+            return { data, status }
         } catch (err) {
-            return err.response.data.msg
+            return err.response
         }
     },
     async logout() {

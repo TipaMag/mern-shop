@@ -33,6 +33,9 @@ export const ProductDetail = () => {
     const classes = useStyles()
     const params = useParams()
     const [detailProduct, setDetailProduct] = useState([])
+
+    const isAuth = useSelector(state => state.auth.isAuth)
+    const isAdmin = useSelector(state => state.user.isAdmin)
     const products = useSelector(state => state.products.products)
 
     useEffect(() => {
@@ -68,7 +71,7 @@ export const ProductDetail = () => {
                     </Box>
 
                     <Typography variant="h6" color='secondary' component="p" >
-                        {`$ ${detailProduct.price}`}
+                        {`₴ ${detailProduct.price}`}
                     </Typography>
                     <Typography variant="body2" color="textSecondary" component="p" paragraph>
                         {detailProduct.description}
@@ -79,7 +82,7 @@ export const ProductDetail = () => {
                     <CardActions>
                         <Button variant='contained' color='primary' startIcon={<ShoppingCartIcon />}>
                             buy now
-                    </Button>
+                        </Button>
                     </CardActions>
                 </CardContent>
                 <Grid item xs={12}>
@@ -97,7 +100,11 @@ export const ProductDetail = () => {
                     {
                         products.map(product => {
                         return (product.category === detailProduct.category) ?
-                            <ProductItem key={product._id} {...product}/>
+                            <ProductItem key={product._id}
+                                isAdmin={isAdmin} 
+                                isAuth={isAuth}
+                                product={product}
+                            />
                             : null
                         })
                     }

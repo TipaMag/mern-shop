@@ -30,7 +30,7 @@ const userCtrl = {
                 path: '/user/refresh_token'
             })
 
-            res.json({accesstoken})
+            return res.status(200).json({accesstoken})
         } catch (err) {
             return res.status(500).json({msg: err.message})
         }
@@ -40,10 +40,10 @@ const userCtrl = {
             const {email, password} = req.body
 
             const user = await Users.findOne({email})
-            if(!user) res.status(400).json({msg: 'User does not exist'})
+            if(!user) return res.status(400).json({msg: 'User does not exist'})
 
             const isMatch = await bcrypt.compare(password, user.password)
-            if(!isMatch) res.status(400).json({msg: 'Incorrect password'})
+            if(!isMatch) return res.status(400).json({msg: 'Incorrect password or email'})
 
             // if login success, create access token an refresh token
             const accesstoken = createAccessToken({id: user._id})
@@ -54,7 +54,7 @@ const userCtrl = {
                 path: '/user/refresh_token'
             })
 
-            res.json({accesstoken})
+            res.status(200).json({accesstoken})
 
         } catch (err) {
             return res.status(500).json({msg: err.message})
@@ -94,7 +94,29 @@ const userCtrl = {
         } catch (err) {
             return res.status(500).json({msg: err.message})
         }
-    }
+    },
+    addToCart: async (req, res) => {
+        try {            
+            await Users.findOneAndUpdate({_id: req.user.id}, {
+                cart: req.body.cart
+            })
+
+            res.status(200).json({msg: 'Added to cart'})
+        } catch (err) {
+            return res.status(500).json({msg: err.message})
+        }
+    },
+    removeFromCart: async (req, res) => {
+        try {            
+            await Users.findOneAndUpdate({_id: req.user.id}, {
+                cart: req.body.cart
+            })
+
+            res.status(200).json({msg: 'Removed from cart'})
+        } catch (err) {
+            return res.status(500).json({msg: err.message})
+        }
+    },
 }
 
 const createAccessToken = (user) => {

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Formik, Field, Form } from 'formik';
-import { authAPI } from '../../../api/auth-api';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -15,6 +14,8 @@ import { Link as RouterLink } from 'react-router-dom';
 
 import { TextField } from 'formik-material-ui';
 import { ButtonGroup } from '@material-ui/core';
+import { useDispatch } from 'react-redux';
+import { registration } from '../../../redux/auth-reducer';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -36,8 +37,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Registration = () => {
-  const classes = useStyles();
+export const RegistrationPage = () => {
+  const dispatch = useDispatch()
+  const classes = useStyles()
 
   return (
     <Container component="main" maxWidth="xs">
@@ -56,8 +58,7 @@ export const Registration = () => {
             password: ''
           }}
           onSubmit={async (values) => {
-            const err = await authAPI.registration(values)
-            if(err) alert(err)
+            dispatch(registration(values))
           }}
         >
           {({ isSubmitting }) => (

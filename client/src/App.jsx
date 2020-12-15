@@ -5,6 +5,9 @@ import { Header } from './components/Header/Header'
 import { Pages } from './components/mainpages/Pages'
 import { getRefreshToken } from './redux/auth-reducer'
 import { getUserInfo } from './redux/user-reducer'
+
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 // import { BackdropLoader } from './components/common/BackdropLoader'
 
 
@@ -14,9 +17,10 @@ export const App = () => {
   // const initialized = useSelector(state => state.app.initialized)
   // if (!initialized) return <BackdropLoader color={'inherit'}/>
 
+  
 
   useEffect(() => {
-    if(token.length > 0) {
+    if(token?.length > 0) {
       dispatch(getUserInfo(token))
     }
   }, [dispatch, token])
@@ -30,6 +34,8 @@ export const App = () => {
     <div className="App">
       <Header/>
       <Pages/>
+      
+      <ToastContainer />
     </div>
   )
 }

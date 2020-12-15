@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import Badge from '@material-ui/core/Badge';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import MenuIcon from '@material-ui/icons/Menu';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import MoreIcon from '@material-ui/icons/MoreVert';
-import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
+import React, { useState } from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import IconButton from '@material-ui/core/IconButton'
+import Typography from '@material-ui/core/Typography'
+import Badge from '@material-ui/core/Badge'
+import MenuItem from '@material-ui/core/MenuItem'
+import Menu from '@material-ui/core/Menu'
+import MenuIcon from '@material-ui/icons/Menu'
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart'
+import AccountCircle from '@material-ui/icons/AccountCircle'
+import MoreIcon from '@material-ui/icons/MoreVert'
+import Button from '@material-ui/core/Button'
+import ButtonGroup from '@material-ui/core/ButtonGroup'
 
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom'
 
 import { LeftMobileMenu } from './LeftMobileMenu'
-import { useDispatch, useSelector } from 'react-redux';
-import { Logout } from '../../redux/auth-reducer';
+import { useDispatch, useSelector } from 'react-redux'
+import { logout } from '../../redux/auth-reducer'
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -38,6 +38,12 @@ const useStyles = makeStyles((theme) => ({
     },
     textDecoration: 'none',
     color: '#fff'
+  },
+  userName: {
+    padding: '0 20px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   navigationDesktop: {
     display: 'none',
@@ -60,45 +66,46 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const Header = () => {
-  const classes = useStyles();
+  const classes = useStyles()
   const dispatch = useDispatch()
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = React.useState(null)
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
 
-  const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const isMenuOpen = Boolean(anchorEl)
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
 
   const isAuth = useSelector(state => state.auth.isAuth)
   const isAdmin = useSelector(state => state.user.isAdmin)
+  const user = useSelector(state => state.user)
 
   const [isOpen, setOpen] = useState(false)
 
   const toggleDrawer = () => {
-    setOpen(!isOpen);
+    setOpen(!isOpen)
   };
 
   const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+    setAnchorEl(event.currentTarget)
   };
 
   const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
+    setMobileMoreAnchorEl(null)
   };
 
   const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
+    setAnchorEl(null)
+    handleMobileMenuClose()
   };
 
   const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
+    setMobileMoreAnchorEl(event.currentTarget)
   };
 
   const handleLogout = () => {
-    dispatch(Logout())
+    dispatch(logout())
   }
 
-  const menuId = 'primary-account-menu';
+  const menuId = 'primary-account-menu'
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -112,9 +119,9 @@ export const Header = () => {
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={() => {handleMenuClose(); handleLogout()}}>Log out</MenuItem>
     </Menu>
-  );
+  )
 
-  const mobileMenuId = 'primary-account-menu-mobile';
+  const mobileMenuId = 'primary-account-menu-mobile'
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
@@ -137,7 +144,7 @@ export const Header = () => {
         <p>Profile</p>
       </MenuItem>
     </Menu>
-  );
+  )
 
   return (
     <div className={classes.grow}>
@@ -178,27 +185,39 @@ export const Header = () => {
               </ButtonGroup>
             }
           </div>
-          <div className={classes.shopCart}>
-            <IconButton aria-label="show 17 new notifications" color="inherit" component={RouterLink} to='/cart'>
-              <Badge badgeContent={17} color="secondary">
-                <ShoppingCartIcon />
-              </Badge>
-            </IconButton>
-          </div>
-          <div className={classes.sectionDesktop}>
-            {(isAuth || isAdmin) &&
-              <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-            }
-          </div>
+          {
+            user.name &&
+              <div className={classes.userName}>
+                <Typography variant="button" color='inherit' component="p">
+                    {isAdmin ? `${user.name} (admin)`: `${user.name}`}
+                </Typography>
+              </div>
+          }
+          {
+            !isAdmin && 
+              <div className={classes.shopCart}>
+                <IconButton aria-label="user cart" color="inherit" component={RouterLink} to='/cart'>
+                  <Badge badgeContent={user.cart.length} showZero color="secondary">
+                    <ShoppingCartIcon />
+                  </Badge>
+                </IconButton>
+              </div>
+          }
+          {
+            (isAuth || isAdmin) &&
+              <div className={classes.sectionDesktop}>
+                <IconButton
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={handleProfileMenuOpen}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+              </div>
+          }
           <div className={classes.sectionMobile}>
             <IconButton
               aria-label="show more"
@@ -221,5 +240,5 @@ export const Header = () => {
         isAuth={isAuth}
         />
     </div>
-  );
+  )
 }

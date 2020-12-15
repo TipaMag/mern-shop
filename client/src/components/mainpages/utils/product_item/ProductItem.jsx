@@ -1,63 +1,91 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
+import { Button, CardActions } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography';
+import { Checkbox, Grid } from '@material-ui/core';
+import { Link as RouterLink } from 'react-router-dom';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import { Grid } from '@material-ui/core';
-import { Link as RouterLink } from 'react-router-dom';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+
+import { addingToCart } from '../../../../redux/user-reducer';
 
 const useStyles = makeStyles({
-    imageCard: {
-        objectFit: 'contain'
+    cardMedia: {
+        padding: '10px',
+        boxSizing: 'border-box',
+        objectFit: 'contain',
     },
 });
 
-export const ProductItem = (props) => {
+export const ProductItem = ({ isAdmin, isAuth, product }) => {
+    const dispatch = useDispatch()
     const classes = useStyles()
+
+    const onAddingToCart = () => {
+        dispatch(addingToCart(product))
+    }
 
     return (
         <Grid item xs={12} sm={6} md={4}>
-            <Card className={classes.root}>
-                <CardActionArea component={RouterLink} to={`/detail/${props._id}`}>
+            <Card>
+                {
+                    isAdmin && <Checkbox checked={product.checked} inputProps={{ 'aria-label': 'primary checkbox' }} />
+                }
+                
+                <CardActionArea component={RouterLink} to={`/detail/${product._id}`}>
                     <CardMedia
-                        className={classes.imageCard}
+                        className={classes.cardMedia}
                         component="img"
-                        alt={props.title}
-                        height="200"
-                        image={props.images.url}
-                        title={props.title}
+                        alt={product.title}
+                        height="250"
+                        image={product.images.url}
+                        title={product.title}
                     />
-                    <CardContent>
-                        <Typography variant="h5" component="h2" noWrap>
-                            {props.title}
-                        </Typography>
-                        <Typography variant="h6" color='secondary' component="p">
-                            {props.price}
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary" component="p" noWrap>
-                            {props.description}
-                        </Typography>
-                    </CardContent>
                 </CardActionArea>
+
+                <CardContent>
+                    <Typography variant="h5" component="h2" noWrap>
+                        {product.title}
+                    </Typography>
+                    <Typography variant="h6" color='secondary' component="p">
+                        {`₴ ${product.price}`}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary" component="p" noWrap>
+                        {product.description}
+                    </Typography>
+                </CardContent>
+
                 <CardActions style={{ justifyContent: 'space-around' }}>
-                    <Button variant='contained' fullWidth color='inherit' startIcon={<ShoppingCartIcon />}>
-                        buy
-                    </Button>
-                    <Button 
-                        variant='contained' 
-                        fullWidth 
-                        color="primary" 
-                        endIcon={<ArrowForwardIcon />}
-                        component={RouterLink} to={`/detail/${props._id}`}
-                    >
-                        view
-                    </Button>
+                    {
+                        isAdmin ?
+                            <>
+                                <Button variant='contained' fullWidth color='inherit' startIcon={<DeleteIcon />}>
+                                    delete
+                                </Button>
+                                <Button variant='outlined' fullWidth color="primary" endIcon={<EditIcon />}
+                                    component={RouterLink} to={`/edit_product/${product._id}`}>
+                                    edit
+                                </Button>
+                            </> :
+                            <>
+                                <Button variant='contained' fullWidth color='inherit' startIcon={<ShoppingCartIcon />}
+                                    onClick={onAddingToCart}>
+                                    add to cart
+                                </Button>
+                                <Button variant='outlined' fullWidth color="primary" endIcon={<ArrowForwardIcon />}
+                                    component={RouterLink} to={`/detail/${product._id}`}>
+                                    view
+                                </Button>
+                            </>
+                    }
                 </CardActions>
             </Card>
         </Grid>

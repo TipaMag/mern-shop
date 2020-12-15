@@ -14,19 +14,26 @@ const useStyles = makeStyles(() => ({
 }))
 
 export const Products = () => {
-    const classes = useStyles();
+    const classes = useStyles()
     const dispatch = useDispatch()
+    const isAuth = useSelector(state => state.auth.isAuth)
+    const isAdmin = useSelector(state => state.user.isAdmin)
     const products = useSelector(state => state.products.products)
 
     useEffect(() => {
         dispatch(getProducts())
     }, [dispatch])
 
+    if(!products) return null
     return (
         <div className={classes.producsContainer}>
             <Grid container spacing={3}>
                 {products.map(product =>
-                    <ProductItem key={product._id} {...product}/>
+                    <ProductItem key={product._id} 
+                        isAdmin={isAdmin} 
+                        isAuth={isAuth} 
+                        product={product}
+                    />
                 )}
             </Grid>
         </div>
