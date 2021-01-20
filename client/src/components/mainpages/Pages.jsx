@@ -8,6 +8,8 @@ import { Products } from './products/Products'
 import { ProductDetail } from './productDetail/ProductDetail'
 import { NotFound } from './utils/not_found/NotFound'
 import { useSelector } from 'react-redux';
+import { OrderHistory } from './history/OrderHistory';
+import { OrderDetails } from './history/OrderDetails';
 
 
 export const Pages = () => {
@@ -21,7 +23,10 @@ export const Pages = () => {
 
                 <Route path="/login" exact component={isAuth ? NotFound : LoginPage} />
                 <Route path="/register" exact component={isAuth ? NotFound : RegistrationPage} />
+
                 <Route path="/cart" exact component={Cart} />
+                <Route path="/history" exact component={isAuth ? OrderHistory : NotFound} />
+                <Route path="/history/:id" exact component={isAuth ? OrderDetails : NotFound} />
 
                 <Route path='*' exact component={NotFound} />
             </Switch>

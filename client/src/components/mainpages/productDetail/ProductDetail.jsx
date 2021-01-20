@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -13,6 +13,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import { ProductItem } from '../utils/product_item/ProductItem';
+import { addingToCart } from '../../../redux/user-reducer';
 
 const useStyles = makeStyles({
     root: {
@@ -30,6 +31,7 @@ const useStyles = makeStyles({
 });
 
 export const ProductDetail = () => {
+    const dispatch = useDispatch()
     const classes = useStyles()
     const params = useParams()
     const [detailProduct, setDetailProduct] = useState([])
@@ -41,10 +43,16 @@ export const ProductDetail = () => {
     useEffect(() => {
         if (params.id) {
             products.forEach(product => {
-                if (product._id === params.id) setDetailProduct(product)
+                if (product._id === params.id) {
+                    setDetailProduct(product)
+                } 
             })
         }
     }, [params.id, products])
+
+    const onAddingToCart = () => {
+        dispatch(addingToCart(detailProduct))
+    }
 
     if (detailProduct.length === 0) return null
     return (
@@ -79,8 +87,10 @@ export const ProductDetail = () => {
                     <Typography variant="body2" color="textSecondary" component="p">
                         {`Sold: ${detailProduct.sold}`}
                     </Typography>
+
                     <CardActions>
-                        <Button variant='contained' color='primary' startIcon={<ShoppingCartIcon />}>
+                        <Button variant='contained' color='primary' startIcon={<ShoppingCartIcon />}
+                            onClick={onAddingToCart}>
                             buy now
                         </Button>
                     </CardActions>

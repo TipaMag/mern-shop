@@ -11,12 +11,22 @@ export const userAPI = {
             console.log(err)
         }
     },
+    async getHistory(token) {
+        try {
+            const { data } = await axios.get('/user/history', {
+                headers: { Authorization: token }
+            })
+            return data
+        } catch (err) {
+            console.log(err)
+        }
+    },
     async addToCart(token, cart) {
         try {
             const { data, status } = await axios.patch('/user/addcart', { cart: cart }, {
                 headers: { Authorization: token }
             })
-            
+
             return { data, status }
         } catch (err) {
             return err.response

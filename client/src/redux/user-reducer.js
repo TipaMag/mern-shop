@@ -7,6 +7,7 @@ let initialState = {
     role: 0,
     cart: [],
     _id: '',
+    history: [],
     isAdmin: false
 }
 
@@ -17,17 +18,22 @@ export const usersReducer = (state = initialState, action) => {
                 ...state,
                 ...action.payload
             }
+        case 'SET_USER_HISTORY':
+            return {
+                ...state,
+                history: [...action.payload]
+            }
         case 'ADD_TO_CART':
             return {
                 ...state,
                 cart: [...state.cart, { ...action.payload, quantity: 1 }]
             }
-        case 'REMOVE_FROM_CART':
+        case 'CHANGE_QUANTITY':
             return {
                 ...state,
                 cart: [...action.payload]
             }
-        case 'CHANGE_QUANTITY':
+        case 'REMOVE_FROM_CART':
             return {
                 ...state,
                 cart: [...action.payload]
@@ -42,16 +48,20 @@ export const usersActions = {
         type: 'SET_USER_DATA',
         payload: { name, email, role, cart, _id, isAdmin }
     }),
+    setHistory: (history) => ({
+        type: 'SET_USER_HISTORY',
+        payload: history
+    }),
     addToCart: (product) => ({
         type: 'ADD_TO_CART',
         payload: product
     }),
-    remveFromCart: (filteredCart) => ({
-        type: 'REMOVE_FROM_CART',
-        payload: filteredCart
-    }),
     changeQuantity: (cart) => ({
         type: 'CHANGE_QUANTITY',
+        payload: cart
+    }),
+    remveFromCart: (cart) => ({
+        type: 'REMOVE_FROM_CART',
         payload: cart
     })
 }
@@ -64,6 +74,13 @@ export const getUserInfo = (token) => async (dispatch) => {
         return
     }
     dispatch(usersActions.setUser(name, email, role, cart, _id, false))
+}
+
+export const getUserHistory = () => async (dispatch, getState) => {
+    const token = getState().auth.token
+
+    const history = await userAPI.getHistory(token)
+    dispatch(usersActions.setHistory(history))
 }
 
 export const addingToCart = (product) => async (dispatch, getState) => {
@@ -83,17 +100,9 @@ export const addingToCart = (product) => async (dispatch, getState) => {
         notify("this product is already in the cart", 'warning')
     }
 }
-export const removedFromCart = (product_id) => async (dispatch, getState) => {
-    const filteredCart = getState().user.cart.filter(item => item.product_id !== product_id)
 
-    const result = await userAPI.removeFromCart(getState().auth.token, filteredCart)
-    if(result.status === 200) {
-        dispatch(usersActions.remveFromCart(filteredCart))
-        notify(result.data.msg, result.status)
-    }
-}
 
-export const changeQuantity = (_id, value) => (dispatch, getState) => {
+export const changeQuantity = (_id, value) => async (dispatch, getState) => {
     const cart = getState().user.cart
     cart.forEach(cartItem => {
         if(cartItem._id === _id) {
@@ -105,5 +114,26 @@ export const changeQuantity = (_id, value) => (dispatch, getState) => {
             }
         }
     })
+    const result = await userAPI.addToCart(getState().auth.token, cart)
+    if(!result.status === 200) {
+        notify(result.data.msg, result.status)
+        return
+    }
     dispatch(usersActions.changeQuantity(cart))
+}
+
+export const removeFromCart = (product_id) => async (dispatch, getState) => {
+    const filteredCart = getState().user.cart.filter(item => item.product_id !== product_id)
+
+    const result = await userAPI.removeFromCart(getState().auth.token, filteredCart)
+    if(result.status === 200) {
+        dispatch(usersActions.remveFromCart(filteredCart))
+        notify(result.data.msg, result.status)
+    }
+}
+export const clearCart = () => async (dispatch, getState) => {
+    const result = await userAPI.removeFromCart(getState().auth.token, [])
+    if(result.status === 200) {
+        dispatch(usersActions.remveFromCart([]))
+    }
 }

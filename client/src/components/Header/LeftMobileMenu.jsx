@@ -28,7 +28,7 @@ export const LeftMobileMenu = ({ isOpen, toggleDrawer, isAdmin, isAuth }) => {
   const classes = useStyles();
   return (
     <div>
-      <Drawer anchor={"left"} open={isOpen} onClose={toggleDrawer}>
+      <Drawer anchor={"left"} open={isOpen} onClick={toggleDrawer}>
         <List className={classes.list}>
           {isAdmin ?
             <>
@@ -59,7 +59,7 @@ export const LeftMobileMenu = ({ isOpen, toggleDrawer, isAdmin, isAuth }) => {
                   <ListItemText primary="shop" />
                 </ListItem>
                 <Divider/>
-                <ListItem button>
+                <ListItem buttoncomponent={RouterLink} to='/history'>
                   <ListItemIcon><HistoryIcon /></ListItemIcon>
                   <ListItemText primary="history" />
                 </ListItem>

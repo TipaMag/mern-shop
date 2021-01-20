@@ -78,7 +78,7 @@ export const ProductItem = ({ isAdmin, isAuth, product }) => {
                             <>
                                 <Button variant='contained' fullWidth color='inherit' startIcon={<ShoppingCartIcon />}
                                     onClick={onAddingToCart}>
-                                    add to cart
+                                    buy
                                 </Button>
                                 <Button variant='outlined' fullWidth color="primary" endIcon={<ArrowForwardIcon />}
                                     component={RouterLink} to={`/detail/${product._id}`}>

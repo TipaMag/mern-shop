@@ -11,7 +11,11 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 // import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { changeQuantity, removedFromCart } from '../../../redux/user-reducer';
+import { changeQuantity, clearCart, removeFromCart } from '../../../redux/user-reducer';
+
+import { PayPalBtn } from './PayPal';
+
+import { paymentsAPI } from '../../../api/payment-api';
 
 const useStyles = makeStyles({
     cartContainer: {
@@ -40,9 +44,10 @@ export const Cart = () => {
     const dispatch = useDispatch()
     const [total, setTotal] = useState(0)
     const cart = useSelector(state => state.user.cart)
+    const token = useSelector(state => state.auth.token)
 
     const handleDelete = (product_id) => {
-        dispatch(removedFromCart(product_id))
+        dispatch(removeFromCart(product_id))
     }
 
     useEffect(() => {
@@ -57,6 +62,14 @@ export const Cart = () => {
         dispatch(changeQuantity(_id, value))
     }
 
+    const tranSuccess = async (payment) => {
+        const {paymentID, address} = payment
+
+        const result = await paymentsAPI.createPayment(token, cart, paymentID, address)
+        console.log(result.data.msg)
+        dispatch(clearCart())
+    }
+
     if (cart.length === 0) {
         return (
             <Typography className={classes.emptyCartText} variant="h4" color="textSecondary" component="p" align="center">
@@ -69,10 +82,6 @@ export const Cart = () => {
             {
                 cart.map(item => (
                     <Card className={classes.cartItem} key={item._id} component={Grid} item container>
-                        <IconButton aria-label="delete" className={classes.deleteBtn} onClick={() => handleDelete(item.product_id)}>
-                            <DeleteIcon />
-                        </IconButton>
-
                         <Grid item xs={12} sm={5}>
                             <CardMedia
                                 className={classes.imageCard}
@@ -83,6 +92,7 @@ export const Cart = () => {
                                 title={item.title}
                             />
                         </Grid>
+
                         <CardContent component={Grid} item xs={12} sm={7}>
                             {/* <Box className={classes.contentHeader}> */}
                                 <Typography variant="h5" component="h2" color='textPrimary'>
@@ -116,11 +126,18 @@ export const Cart = () => {
                                 </ButtonGroup>
                             </CardActions>
                         </CardContent>
+
+                        <IconButton aria-label="delete" className={classes.deleteBtn} onClick={() => handleDelete(item.product_id)}>
+                            <DeleteIcon />
+                        </IconButton>
                     </Card>
                 ))
             }
-            <Typography variant='h5' color='secondary'>
-                Total: ₴ {total}
+            <Typography component='div' style={{display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '20px'}}>
+                <Typography variant='h5' color='secondary'>
+                    Total: ₴ {total}
+                </Typography>
+                <PayPalBtn total={total} tranSuccess={tranSuccess}/>
             </Typography>
         </Grid>
     )
