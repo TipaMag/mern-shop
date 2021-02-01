@@ -170,7 +170,7 @@ export const Header = () => {
               <ButtonGroup variant="contained" color="primary" aria-label="outlined primary button group">
                 <Button component={RouterLink} to='/'>products</Button>
                 <Button component={RouterLink} to='/'>create products</Button>
-                <Button component={RouterLink} to='/'>categories</Button>
+                <Button component={RouterLink} to='/categories'>categories</Button>
                 <Button component={RouterLink} to='/history'>history</Button>
               </ButtonGroup> :
             (!isAdmin & isAuth) ?

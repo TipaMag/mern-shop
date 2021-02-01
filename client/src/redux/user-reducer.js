@@ -1,3 +1,4 @@
+import { paymentsAPI } from "../api/payment-api"
 import { userAPI } from "../api/user-api"
 import { notify } from "../components/mainpages/utils/notify/Notify"
 
@@ -78,14 +79,20 @@ export const getUserInfo = (token) => async (dispatch) => {
 
 export const getUserHistory = () => async (dispatch, getState) => {
     const token = getState().auth.token
+    const isAdmin = getState().user.isAdmin
 
-    const history = await userAPI.getHistory(token)
-    dispatch(usersActions.setHistory(history))
+    if (isAdmin) {
+        const history = await paymentsAPI.getPayments(token)
+        dispatch(usersActions.setHistory(history))
+    } else {
+        const history = await userAPI.getHistory(token)
+        dispatch(usersActions.setHistory(history))
+    }
 }
 
 export const addingToCart = (product) => async (dispatch, getState) => {
     const isAuth = getState().auth.isAuth
-    if(!isAuth) {
+    if (!isAuth) {
         return notify('Please login to continue buying', 'error')
     }
 
@@ -101,21 +108,20 @@ export const addingToCart = (product) => async (dispatch, getState) => {
     }
 }
 
-
 export const changeQuantity = (_id, value) => async (dispatch, getState) => {
     const cart = getState().user.cart
     cart.forEach(cartItem => {
-        if(cartItem._id === _id) {
-            if(value === 'decrease' && cartItem.quantity > 1) {
+        if (cartItem._id === _id) {
+            if (value === 'decrease' && cartItem.quantity > 1) {
                 cartItem.quantity -= 1
             }
-            if(value === 'increase' && cartItem.quantity < 99) {
+            if (value === 'increase' && cartItem.quantity < 99) {
                 cartItem.quantity += 1
             }
         }
     })
     const result = await userAPI.addToCart(getState().auth.token, cart)
-    if(!result.status === 200) {
+    if (!result.status === 200) {
         notify(result.data.msg, result.status)
         return
     }
@@ -126,14 +132,14 @@ export const removeFromCart = (product_id) => async (dispatch, getState) => {
     const filteredCart = getState().user.cart.filter(item => item.product_id !== product_id)
 
     const result = await userAPI.removeFromCart(getState().auth.token, filteredCart)
-    if(result.status === 200) {
+    if (result.status === 200) {
         dispatch(usersActions.remveFromCart(filteredCart))
         notify(result.data.msg, result.status)
     }
 }
 export const clearCart = () => async (dispatch, getState) => {
     const result = await userAPI.removeFromCart(getState().auth.token, [])
-    if(result.status === 200) {
+    if (result.status === 200) {
         dispatch(usersActions.remveFromCart([]))
     }
 }

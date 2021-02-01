@@ -5,7 +5,7 @@ const cors = require('cors')
 const fileUpload = require('express-fileupload')
 const cookieParser = require('cookie-parser')
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 4200
 
 const app = express()
 app.use(express.json())

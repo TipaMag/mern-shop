@@ -10,10 +10,12 @@ import { NotFound } from './utils/not_found/NotFound'
 import { useSelector } from 'react-redux';
 import { OrderHistory } from './history/OrderHistory';
 import { OrderDetails } from './history/OrderDetails';
+import { Categories } from './categories/Categories';
 
 
 export const Pages = () => {
     const isAuth = useSelector(state => state.auth.isAuth)
+    const isAdmin = useSelector(state => state.user.isAdmin)
 
     return (
         <div style={{ marginTop: '20px', padding: '0 20px'}}>
@@ -27,6 +29,9 @@ export const Pages = () => {
                 <Route path="/cart" exact component={Cart} />
                 <Route path="/history" exact component={isAuth ? OrderHistory : NotFound} />
                 <Route path="/history/:id" exact component={isAuth ? OrderDetails : NotFound} />
+
+                <Route path="/categories" exact component={isAdmin ? Categories : NotFound} />
+
 
                 <Route path='*' exact component={NotFound} />
             </Switch>
