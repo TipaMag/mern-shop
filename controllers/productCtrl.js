@@ -6,10 +6,10 @@ class APIfeatures {
         this.queryString = queryString
     }
     filtering() {
-        const queryObj = {...this.queryString} // queryString = req.query
+        const queryObj = { ...this.queryString } // queryString = req.query
 
         const excludeFields = ['page', 'sort', 'limit']
-        excludeFields.forEach(el => delete(queryObj[el]))
+        excludeFields.forEach(el => delete (queryObj[el]))
 
         let queryStr = JSON.stringify(queryObj)
         queryStr = queryStr.replace(/\b(gte|gt|lt|lte|regex)\b/g, match => '$' + match)
@@ -21,7 +21,7 @@ class APIfeatures {
         return this
     }
     sorting() {
-        if(this.queryString.sort) {
+        if (this.queryString.sort) {
             const sortBy = this.queryString.sort.split(',').join(' ')
             this.query = this.query.sort(sortBy)
         }
@@ -58,17 +58,17 @@ const productCtrl = {
     createProduct: async (req, res) => {
         try {
             const { product_id, title, description, content, price, images, category } = req.body
-            if (!images) return res.status(400).json('No image upload')
+            if (!images) return res.status(400).json({ msg: 'No image upload' })
 
             const product = await Product.findOne({ product_id })
-            if (product) return res.status(400).json('Product with this ID already exists')
+            if (product) return res.status(400).json({ msg: 'Product with this ID already exists' })
 
             const newProduct = new Product({
                 product_id, title: title.toLowerCase(), description, content, price, images, category
             })
-
             await newProduct.save()
-            res.status(201).json('Product has been created')
+
+            res.status(201).json({ msg: 'Product has been created' })
         } catch (err) {
             res.status(500).json({ msg: err.message })
         }
@@ -76,9 +76,9 @@ const productCtrl = {
     deleteProduct: async (req, res) => {
         try {
             const product = await Product.findByIdAndDelete({ _id: req.params.id })
-            if (!product) return res.status(400).json('Product not found')
+            if (!product) return res.status(400).json({ msg: 'Product not found' })
 
-            res.json("Product has been deleted")
+            res.status(200).json({ msg: "Product has been deleted" })
         } catch (err) {
             res.status(500).json({ msg: err.message })
         }
@@ -86,7 +86,7 @@ const productCtrl = {
     updateProduct: async (req, res) => {
         try {
             const { title, description, content, price, images, category } = req.body
-            if (!images) return res.status(400).json('No image upload')
+            if (!images) return res.status(400).json({ msg: 'No image upload' })
 
             await Product.findByIdAndUpdate({ _id: req.params.id }, {
                 title: title.toLowerCase(), description, content, price, images, category

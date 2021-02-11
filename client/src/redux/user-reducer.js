@@ -1,6 +1,7 @@
 import { paymentsAPI } from "../api/payment-api"
 import { userAPI } from "../api/user-api"
 import { notify } from "../components/mainpages/utils/notify/Notify"
+import { authActions } from "./auth-reducer"
 
 let initialState = {
     name: '',
@@ -70,6 +71,8 @@ export const usersActions = {
 export const getUserInfo = (token) => async (dispatch) => {
     const userData = await userAPI.getUserInfo(token)
     const { name, email, role, cart, _id } = userData
+
+    dispatch(authActions.setIsAuth())
     if (role === 1) {
         dispatch(usersActions.setUser(name, email, role, cart, _id, true))
         return

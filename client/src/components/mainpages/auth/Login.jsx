@@ -1,21 +1,16 @@
-import React from 'react';
-import { Formik, Field, Form } from 'formik';
-
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-
-import { Link as RouterLink } from 'react-router-dom';
-
-import { TextField } from 'formik-material-ui';
-import { ButtonGroup } from '@material-ui/core';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link as RouterLink, Redirect } from 'react-router-dom';
+import { useFormik } from 'formik';
 import { login } from '../../../redux/auth-reducer';
-import { useDispatch } from 'react-redux';
+
+import { Typography, Container, CssBaseline, Avatar, ButtonGroup, Button, TextField } from '@material-ui/core';
+import { FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@material-ui/core';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import { makeStyles } from '@material-ui/core/styles';
+
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -40,7 +35,21 @@ const useStyles = makeStyles((theme) => ({
 export const LoginPage = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const isAuth = useSelector(state => state.auth.isAuth)
 
+  const [showPassword, setShowPassword] = useState(false)
+
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: ''
+    },
+    onSubmit: (values) => {
+      dispatch(login(values))
+    }
+  })
+
+  if (isAuth) return <Redirect to='/' />
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -52,63 +61,58 @@ export const LoginPage = () => {
           Login
         </Typography>
 
-        <Formik
-          initialValues={{
-            email: '',
-            password: ''
-          }}
-          onSubmit={async (values) => {
-            dispatch(login(values))
-          }}
-        >
-          {({ isSubmitting }) => (
-            <Form className={classes.form}>
-              <Field
-                name="email"
-                placeholder="jane@acme.com"
-                type="email"
-                label='Email'
-                component={TextField}
+        <form className={classes.form} onSubmit={formik.handleSubmit} >
+          <TextField
+            fullWidth
+            id="email"
+            name="email"
+            label="email"
+            variant="outlined"
+            margin="normal"
+            type="email"
+            autoFocus
 
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                id="email"
-                autoComplete="email"
-                autoFocus
-              />
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            error={formik.touched.email && Boolean(formik.errors.email)}
+            helperText={formik.touched.email && formik.errors.email}
+          />
 
-              <Field
-                name="password"
-                placeholder="password"
-                type="password"
-                label="Password"
-                component={TextField}
+          <FormControl variant="outlined" fullWidth margin="normal">
+            <InputLabel htmlFor="password">Password</InputLabel>
+            <OutlinedInput
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowPassword(!showPassword)}
+                    onMouseDown={e => e.preventDefault()}
+                    edge="end"
+                  >
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              labelWidth={75}
+            />
+          </FormControl>
 
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                id="password"
-                autoComplete="current-password"
-              />
-              <ButtonGroup className={classes.buttonGroup} variant="contained" color="primary" fullWidth aria-label="outlined primary button group">
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  disabled={isSubmitting}
-                >
-                  Login
-                  </Button>
-                <Button component={RouterLink} color="secondary" to='/register'>Registration</Button>
-              </ButtonGroup>
-              {/* <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link> */}
-            </Form>
-          )}
-        </Formik>
+          <ButtonGroup className={classes.buttonGroup} variant="contained" color="primary" fullWidth aria-label="outlined primary button group">
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+            >
+              Login
+              </Button>
+            <Button component={RouterLink} color="secondary" to='/register'>Registration</Button>
+          </ButtonGroup>
+        </form>
       </div>
     </Container>
   )

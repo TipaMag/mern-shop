@@ -4,7 +4,7 @@ const categoryCtrl = {
   getCategories: async (req, res) => {
     try {
       const categories = await Category.find()
-      res.json(categories)
+      res.status(200).json(categories)
     } catch (err) {
       return res.status(500).json({ msg: err.message })
     }
@@ -15,15 +15,13 @@ const categoryCtrl = {
       // only admin can create, update and delete category
       const { name } = req.body
       const сategory = await Category.findOne({ name })
-      if (сategory) {
-        return res.status(400).json({ msg: "Сategory with this name already exists" })
-      }
+      if (сategory) return res.status(400).json({ msg: "Сategory with this name already exists" })
 
       const newCategory = new Category({
         name,
       })
-      
       await newCategory.save()
+      
       res.status(201).json({ msg: `Category: ${name} has been created` })
     } catch (err) {
       return res.status(500).json({ msg: err.message })

@@ -3,8 +3,8 @@ import axios from 'axios';
 export const authAPI = {
     async registration(user) {
         try {
-            const { data, status } =  await axios.post('/user/register', { ...user })
-            return { data, status }
+            const result =  await axios.post('/user/register', { ...user })
+            return result
         } catch (err) {
             return err.response
         }

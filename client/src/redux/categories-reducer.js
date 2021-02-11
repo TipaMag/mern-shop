@@ -34,7 +34,9 @@ export const addCategory = (name) => async (dispatch, getState) => {
     const result = await categoriesAPI.createCategory(token, name)
 
     notify(result.data.msg, result.status)
-    dispatch(getCategories())
+    if(result.status !== 400) {
+        dispatch(getCategories())
+    }
 }
 
 export const removeCategory = (id) => async (dispatch, getState) => {

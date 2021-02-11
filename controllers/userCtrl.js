@@ -28,10 +28,11 @@ const userCtrl = {
 
             res.cookie('refreshtoken', refreshtoken, {
                 httpOnly: true,
-                path: '/user/refresh_token'
+                path: '/user/refresh_token',
+                maxAge: 7*24*60*60*1000 // 7d
             })
 
-            return res.status(200).json({accesstoken})
+            return res.status(200).json({msg: 'User registered successfully', accesstoken})
         } catch (err) {
             return res.status(500).json({msg: err.message})
         }
@@ -52,7 +53,8 @@ const userCtrl = {
 
             res.cookie('refreshtoken', refreshtoken, {
                 httpOnly: true,
-                path: '/user/refresh_token'
+                path: '/user/refresh_token',
+                maxAge: 7*24*60*60*1000 // 7d
             })
 
             res.status(200).json({accesstoken})
@@ -78,10 +80,9 @@ const userCtrl = {
                 if(err) return res.status(400).json({msg: 'Please Login or Register'})
 
                 const accesToken = createAccessToken({id: user.id})
-
+                
                 res.json({accesToken})
             })
-
         } catch (err) {
             return res.status(500).json({msg: err.message})
         }

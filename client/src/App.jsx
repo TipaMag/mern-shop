@@ -17,18 +17,16 @@ export const App = () => {
   // const initialized = useSelector(state => state.app.initialized)
   // if (!initialized) return <BackdropLoader color={'inherit'}/>
 
-  
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken')
+    if(token) dispatch(getRefreshToken())
+  }, [dispatch])
 
   useEffect(() => {
     if(token?.length > 0) {
       dispatch(getUserInfo(token))
     }
   }, [dispatch, token])
-
-  useEffect(() => {
-    const firstLogin = localStorage.getItem('firstLogin')
-    if(firstLogin) dispatch(getRefreshToken())
-  }, [dispatch])
 
   return (
     <div className="App">

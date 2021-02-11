@@ -1,21 +1,16 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import { Button, CardActions } from '@material-ui/core'
-import Typography from '@material-ui/core/Typography';
-import { Checkbox, Grid } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-
 import { addingToCart } from '../../../../redux/user-reducer';
+import { makeStyles } from '@material-ui/core/styles';
+
+import { Checkbox, Grid, Typography, Card, CardActionArea, CardContent, CardMedia, Button, CardActions } from '@material-ui/core';
+
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+
 
 const useStyles = makeStyles({
     cardMedia: {
@@ -25,7 +20,7 @@ const useStyles = makeStyles({
     },
 });
 
-export const ProductItem = ({ isAdmin, isAuth, product }) => {
+export const ProductItem = ({ isAdmin, isAuth, product, handleProductDelete }) => {
     const dispatch = useDispatch()
     const classes = useStyles()
 
@@ -67,7 +62,9 @@ export const ProductItem = ({ isAdmin, isAuth, product }) => {
                     {
                         isAdmin ?
                             <>
-                                <Button variant='contained' fullWidth color='inherit' startIcon={<DeleteIcon />}>
+                                <Button variant='contained' fullWidth color='inherit' startIcon={<DeleteIcon />} 
+                                    onClick={e => handleProductDelete(product._id, product.images.public_id)}
+                                >
                                     delete
                                 </Button>
                                 <Button variant='outlined' fullWidth color="primary" endIcon={<EditIcon />}

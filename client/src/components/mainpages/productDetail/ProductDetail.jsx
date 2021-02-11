@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useHistory, useParams, Link as RouterLink } from 'react-router-dom'
+
+import { addingToCart } from '../../../redux/user-reducer';
+import { deleteProducts } from '../../../redux/products-reducer';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid } from '@material-ui/core';
-import Box from '@material-ui/core/Box';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import { Grid, Box, Card, CardActions, CardContent, CardMedia, Button, Typography } from '@material-ui/core';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+
 import { ProductItem } from '../utils/product_item/ProductItem';
-import { addingToCart } from '../../../redux/user-reducer';
+
 
 const useStyles = makeStyles({
     root: {
@@ -34,6 +33,7 @@ export const ProductDetail = () => {
     const dispatch = useDispatch()
     const classes = useStyles()
     const params = useParams()
+    const history = useHistory()
     const [detailProduct, setDetailProduct] = useState([])
 
     const isAuth = useSelector(state => state.auth.isAuth)
@@ -52,6 +52,16 @@ export const ProductDetail = () => {
 
     const onAddingToCart = () => {
         dispatch(addingToCart(detailProduct))
+    }
+
+    const handleProductDelete = (id, imagePublicID) => {
+        if (isAdmin) {
+            let result = window.confirm('Are you sure you want to delete this product?')
+            if(result) {
+                dispatch(deleteProducts(id, imagePublicID))
+                history.push('/')
+            }
+        }
     }
 
     if (detailProduct.length === 0) return null
@@ -88,12 +98,25 @@ export const ProductDetail = () => {
                         {`Sold: ${detailProduct.sold}`}
                     </Typography>
 
-                    <CardActions>
-                        <Button variant='contained' color='primary' startIcon={<ShoppingCartIcon />}
-                            onClick={onAddingToCart}>
-                            buy now
-                        </Button>
-                    </CardActions>
+                    {isAdmin ?
+                        <CardActions>
+                            <Button variant='contained' fullWidth color='inherit' startIcon={<DeleteIcon />} 
+                                    onClick={e => handleProductDelete(detailProduct._id, detailProduct.images.public_id)}>
+                                delete
+                            </Button>
+                            <Button variant='outlined' fullWidth color="primary" endIcon={<EditIcon />}
+                                component={RouterLink} to={`/edit_product/${detailProduct._id}`}>
+                                edit
+                            </Button>
+                        </CardActions>
+                        : 
+                        <CardActions>
+                            <Button variant='contained' color='primary' startIcon={<ShoppingCartIcon />}
+                                onClick={onAddingToCart}>
+                                buy now
+                            </Button>
+                        </CardActions>
+                    }
                 </CardContent>
                 <Grid item xs={12}>
                     <Typography variant="body1" color="textPrimary" component="p" paragraph>
@@ -114,6 +137,7 @@ export const ProductDetail = () => {
                                 isAdmin={isAdmin} 
                                 isAuth={isAuth}
                                 product={product}
+                                handleProductDelete={handleProductDelete}
                             />
                             : null
                         })

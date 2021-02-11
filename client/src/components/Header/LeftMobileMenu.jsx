@@ -37,9 +37,9 @@ export const LeftMobileMenu = ({ isOpen, toggleDrawer, isAdmin, isAuth }) => {
                 <ListItemText primary="products" />
               </ListItem>
               <Divider/>
-              <ListItem button>
+              <ListItem button component={RouterLink} to='/create_product'>
                 <ListItemIcon><AddIcon /></ListItemIcon>
-                <ListItemText primary="create products" />
+                <ListItemText primary="create product" />
               </ListItem>
               <Divider/>
               <ListItem button component={RouterLink} to='/categories'>

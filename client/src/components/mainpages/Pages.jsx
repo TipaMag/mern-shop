@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import { OrderHistory } from './history/OrderHistory';
 import { OrderDetails } from './history/OrderDetails';
 import { Categories } from './categories/Categories';
+import { CreateProduct } from './createProduct/CreateProduct';
 
 
 export const Pages = () => {
@@ -23,8 +24,8 @@ export const Pages = () => {
                 <Route path="/" exact component={Products} />
                 <Route path="/detail/:id" exact component={ProductDetail} />
 
-                <Route path="/login" exact component={isAuth ? NotFound : LoginPage} />
-                <Route path="/register" exact component={isAuth ? NotFound : RegistrationPage} />
+                <Route path="/login" exact component={LoginPage} />
+                <Route path="/register" exact component={RegistrationPage} />
 
                 <Route path="/cart" exact component={Cart} />
                 <Route path="/history" exact component={isAuth ? OrderHistory : NotFound} />
@@ -32,6 +33,8 @@ export const Pages = () => {
 
                 <Route path="/categories" exact component={isAdmin ? Categories : NotFound} />
 
+                <Route path="/create_product" exact component={isAdmin ? CreateProduct : NotFound} />
+                <Route path="/edit_product/:id" exact component={isAdmin ? CreateProduct : NotFound} />
 
                 <Route path='*' exact component={NotFound} />
             </Switch>

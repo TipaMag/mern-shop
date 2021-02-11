@@ -34,29 +34,25 @@ export const authActions = {
     })
 }
 
-export const login = (values) => async (dispatch) => {
-    const result = await authAPI.login(values)
-    if (result.status !== 200) {
-        notify(result.data.msg, result.status)
-    } else {
-        localStorage.setItem('firstLogin', true)
-        window.location.href = '/'
-    }
-}
-
 export const registration = (values) => async (dispatch) => {
     const result = await authAPI.registration(values)
+    notify(result.data.msg, result.status)
+}
+
+export const login = (values) => async (dispatch) => {
+    const result = await authAPI.login(values)
+    const token = result.data.accesstoken
     if (result.status !== 200) {
         notify(result.data.msg, result.status)
     } else {
-        localStorage.setItem('firstLogin', true)
-        window.location.href = '/'
+        localStorage.setItem('accessToken', token)
+        dispatch(authActions.setToken(token))
+        dispatch(authActions.setIsAuth())
     }
 }
 
 export const logout = () => async (dispatch) => {
     await authAPI.logout()
-
     dispatch({ type: 'RESET' })
     localStorage.clear()
 
@@ -65,6 +61,6 @@ export const logout = () => async (dispatch) => {
 
 export const getRefreshToken = () => async (dispatch) => {
     const token = await authAPI.getRefreshToken()
+    localStorage.setItem('accessToken', token)
     dispatch(authActions.setToken(token))
-    dispatch(authActions.setIsAuth())
 }
