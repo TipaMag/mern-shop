@@ -1,9 +1,11 @@
 import axios from 'axios'
 
 export const productsAPI = {
-    async getProducts() {
+    async getProducts(filters) {
         try {
-            const { data } = await axios.get('/api/products')
+            let {page, limit, category, sort, search} = filters
+            category = (category === 'all' || !category) ? '' : `${'category=' + category}`
+            const { data } = await axios.get(`/api/products/?page=${page}&limit=${limit}&${category}&sort=${sort}&title[regex]=${search}`)
             return data
         } catch (err) {
             console.log(err)
@@ -29,7 +31,7 @@ export const productsAPI = {
             return err.response
         }
     },
-    async deleteProduct(token, id) {
+    async deleteProducts(token, id) {
         try {
             const result = await axios.delete(`/api/products/${id}`, {
                 headers: { Authorization: token }

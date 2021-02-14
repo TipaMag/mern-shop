@@ -26,7 +26,7 @@ router.post('/upload', auth, authAdmin, (req, res) => {
             res.status(400).json({ msg: 'File is not supports' })
         }
 
-        cloudinary.v2.uploader.upload(file.tempFilePath, { folder: 'test' }, (error, result) => {
+        cloudinary.v2.uploader.upload(file.tempFilePath, { folder: 'test2' }, (error, result) => {
             if (error) throw error
 
             removeTmpFile(file.tempFilePath)
@@ -44,7 +44,9 @@ router.post('/destroy', auth, authAdmin, (req, res) => {
         const { public_id } = req.body
         if(!public_id) return res.status(400).json({msg: 'No image select'})
 
-        cloudinary.v2.uploader.destroy(public_id, (error, result) => {
+        console.log(public_id)
+        // cloudinary.v2.uploader.destroy( public_id, (error, result) ...  ===   delete one resource
+        cloudinary.v2.api.delete_resources([...public_id], (error, result) => {
             if (error) throw error
             if(result.result === 'not found') return res.status(404).json({msg: 'Image not found'})
 

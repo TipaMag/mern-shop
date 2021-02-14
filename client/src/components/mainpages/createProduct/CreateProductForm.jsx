@@ -143,6 +143,7 @@ export const CreateProductForm = ({initialPropValues, categories, handleFormSubm
                         name="category"
                         value={formik.values.category}
                         onChange={formik.handleChange}
+                        defaultValue=''
                     >
                         <MenuItem value="">
                             <em>None</em>

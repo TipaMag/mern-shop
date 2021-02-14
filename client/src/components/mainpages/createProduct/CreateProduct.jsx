@@ -62,11 +62,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 let initialProduct = {
-    product_id: 'test',
-    title: 'test',
-    description: 'test',
-    content: 'test',
-    price: 12,
+    product_id: '',
+    title: '',
+    description: '',
+    content: '',
+    price: 0,
     id: '',
     category: ''
 }

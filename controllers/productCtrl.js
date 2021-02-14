@@ -75,11 +75,18 @@ const productCtrl = {
     },
     deleteProduct: async (req, res) => {
         try {
-            const product = await Product.findByIdAndDelete({ _id: req.params.id })
-            if (!product) return res.status(400).json({ msg: 'Product not found' })
-
-            res.status(200).json({ msg: "Product has been deleted" })
+            let productID = req.params.id.split(',')
+            if(productID.length > 1) { // delete some products
+                const product = await Product.deleteMany({ _id: productID})
+                if (!product) return res.status(400).json({ msg: 'Products not found' })
+                return res.status(200).json({ msg: "Products has been deleted" })
+            } else {
+                const product = await Product.findByIdAndDelete({ _id: productID })
+                if (!product) return res.status(400).json({ msg: 'Product not found' })
+                return res.status(200).json({ msg: "Product has been deleted" })
+            }
         } catch (err) {
+            console.log({ msg: err.message })
             res.status(500).json({ msg: err.message })
         }
     },

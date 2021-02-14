@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams, Link as RouterLink } from 'react-router-dom'
 
 import { addingToCart } from '../../../redux/user-reducer';
-import { deleteProducts } from '../../../redux/products-reducer';
+import { getProducts, deleteProduct } from '../../../redux/products-reducer';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Box, Card, CardActions, CardContent, CardMedia, Button, Typography } from '@material-ui/core';
@@ -41,6 +41,9 @@ export const ProductDetail = () => {
     const products = useSelector(state => state.products.products)
 
     useEffect(() => {
+        if(products.length === 0) {
+            dispatch(getProducts())
+        }
         if (params.id) {
             products.forEach(product => {
                 if (product._id === params.id) {
@@ -48,7 +51,7 @@ export const ProductDetail = () => {
                 } 
             })
         }
-    }, [params.id, products])
+    }, [params.id, products, dispatch])
 
     const onAddingToCart = () => {
         dispatch(addingToCart(detailProduct))
@@ -58,7 +61,7 @@ export const ProductDetail = () => {
         if (isAdmin) {
             let result = window.confirm('Are you sure you want to delete this product?')
             if(result) {
-                dispatch(deleteProducts(id, imagePublicID))
+                dispatch(deleteProduct(id, imagePublicID))
                 history.push('/')
             }
         }

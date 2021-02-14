@@ -1,7 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
-import { addingToCart } from '../../../../redux/user-reducer';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { Checkbox, Grid, Typography, Card, CardActionArea, CardContent, CardMedia, Button, CardActions } from '@material-ui/core';
@@ -20,19 +18,14 @@ const useStyles = makeStyles({
     },
 });
 
-export const ProductItem = ({ isAdmin, isAuth, product, handleProductDelete }) => {
-    const dispatch = useDispatch()
+export const ProductItem = ({ isAdmin, isAuth, product, handleAddingToCart, handleProductDelete, handleCheck }) => {
     const classes = useStyles()
-
-    const onAddingToCart = () => {
-        dispatch(addingToCart(product))
-    }
 
     return (
         <Grid item xs={12} sm={6} md={4}>
             <Card>
-                {
-                    isAdmin && <Checkbox checked={product.checked} inputProps={{ 'aria-label': 'primary checkbox' }} />
+                { isAdmin && 
+                    <Checkbox checked={product.checked} onChange={() => handleCheck(product._id)}/>
                 }
                 
                 <CardActionArea component={RouterLink} to={`/detail/${product._id}`}>
@@ -74,7 +67,7 @@ export const ProductItem = ({ isAdmin, isAuth, product, handleProductDelete }) =
                             </> :
                             <>
                                 <Button variant='contained' fullWidth color='inherit' startIcon={<ShoppingCartIcon />}
-                                    onClick={onAddingToCart}>
+                                    onClick={() => handleAddingToCart(product)}>
                                     buy
                                 </Button>
                                 <Button variant='outlined' fullWidth color="primary" endIcon={<ArrowForwardIcon />}

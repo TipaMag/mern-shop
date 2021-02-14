@@ -58,7 +58,7 @@ export const Cart = () => {
         getTotal()
     }, [cart])
 
-    const onChangeQuantity = (_id, value) => {
+    const handleChangeQuantity = (_id, value) => {
         dispatch(changeQuantity(_id, value))
     }
 
@@ -118,11 +118,11 @@ export const Cart = () => {
                                 </Button> */}
 
                                 <ButtonGroup color="primary" aria-label="outlined primary button group">
-                                    <Button onClick={() => onChangeQuantity(item._id, 'decrease')}>-</Button>
+                                    <Button onClick={() => handleChangeQuantity(item._id, 'decrease')}>-</Button>
                                     <Button disabled>
                                         {item.quantity}
                                     </Button>
-                                    <Button onClick={() => onChangeQuantity(item._id, 'increase')}>+</Button>
+                                    <Button onClick={() => handleChangeQuantity(item._id, 'increase')}>+</Button>
                                 </ButtonGroup>
                             </CardActions>
                         </CardContent>
