@@ -1,4 +1,9 @@
 import React, { useState } from 'react'
+import { Link as RouterLink, useHistory } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+
+import { logout } from '../../redux/auth-reducer'
+
 import { makeStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -14,11 +19,9 @@ import MoreIcon from '@material-ui/icons/MoreVert'
 import Button from '@material-ui/core/Button'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
 
-import { Link as RouterLink } from 'react-router-dom'
-
 import { LeftMobileMenu } from './LeftMobileMenu'
-import { useDispatch, useSelector } from 'react-redux'
-import { logout } from '../../redux/auth-reducer'
+
+
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -68,8 +71,9 @@ const useStyles = makeStyles((theme) => ({
 export const Header = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const [anchorEl, setAnchorEl] = React.useState(null)
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
+  const history = useHistory()
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null)
 
   const isMenuOpen = Boolean(anchorEl)
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
@@ -101,8 +105,9 @@ export const Header = () => {
     setMobileMoreAnchorEl(event.currentTarget)
   };
 
-  const handleLogout = () => {
-    dispatch(logout())
+  const handleLogout = async () => {
+    await dispatch(logout()) // fix
+    history.push('/login')
   }
 
   const menuId = 'primary-account-menu'
@@ -116,8 +121,8 @@ export const Header = () => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={() => {handleMenuClose(); handleLogout()}}>Log out</MenuItem>
+      {/* <MenuItem onClick={handleMenuClose}>Profile</MenuItem> */}
+      <MenuItem onClick={() => { handleMenuClose(); handleLogout() }}>Log out</MenuItem>
     </Menu>
   )
 
@@ -173,72 +178,76 @@ export const Header = () => {
                 <Button component={RouterLink} to='/categories'>categories</Button>
                 <Button component={RouterLink} to='/history'>history</Button>
               </ButtonGroup> :
-            (!isAdmin & isAuth) ?
-              <ButtonGroup variant="contained" color="primary" aria-label="outlined primary button group">
-                <Button component={RouterLink} to='/'>shop</Button>
-                <Button component={RouterLink} to='/history'>history</Button>
-              </ButtonGroup> :
-              <ButtonGroup variant="contained" color="primary" aria-label="outlined primary button group">
-                <Button component={RouterLink} to='/'>shop</Button>
-                <Button component={RouterLink} to='/login'>Login</Button>
-                <Button component={RouterLink} to='/register'>Registration</Button>
-              </ButtonGroup>
+              (!isAdmin & isAuth) ?
+                <ButtonGroup variant="contained" color="primary" aria-label="outlined primary button group">
+                  <Button component={RouterLink} to='/'>shop</Button>
+                  <Button component={RouterLink} to='/history'>history</Button>
+                </ButtonGroup> :
+                <ButtonGroup variant="contained" color="primary" aria-label="outlined primary button group">
+                  <Button component={RouterLink} to='/'>shop</Button>
+                  <Button component={RouterLink} to='/login'>Login</Button>
+                  <Button component={RouterLink} to='/register'>Registration</Button>
+                </ButtonGroup>
             }
           </div>
           {
             user.name &&
-              <div className={classes.userName}>
-                <Typography variant="button" color='inherit' component="p">
-                    {isAdmin ? `${user.name} (admin)`: `${user.name}`}
-                </Typography>
-              </div>
+            <div className={classes.userName}>
+              <Typography variant="button" color='inherit' component="p">
+                {isAdmin ? `${user.name} (admin)` : `${user.name}`}
+              </Typography>
+            </div>
           }
           {
-            !isAdmin && 
-              <div className={classes.shopCart}>
-                <IconButton aria-label="user cart" color="inherit" component={RouterLink} to='/cart'>
-                  <Badge badgeContent={user.cart.length} showZero color="secondary">
-                    <ShoppingCartIcon />
-                  </Badge>
-                </IconButton>
-              </div>
+            !isAdmin &&
+            <div className={classes.shopCart}>
+              <IconButton aria-label="user cart" color="inherit" component={RouterLink} to='/cart'>
+                <Badge badgeContent={user.cart.length} showZero color="secondary">
+                  <ShoppingCartIcon />
+                </Badge>
+              </IconButton>
+            </div>
           }
           {
             (isAuth || isAdmin) &&
-              <div className={classes.sectionDesktop}>
-                <IconButton
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleProfileMenuOpen}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-              </div>
+            <div className={classes.sectionDesktop}>
+              <IconButton
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+            </div>
           }
-          <div className={classes.sectionMobile}>
-            <IconButton
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </div>
+          
+          {isAuth &&
+            <div className={classes.sectionMobile}>
+              <IconButton
+                aria-label="show more"
+                aria-controls={mobileMenuId}
+                aria-haspopup="true"
+                onClick={handleMobileMenuOpen}
+                color="inherit"
+              >
+                <MoreIcon />
+              </IconButton>
+            </div>
+          }
         </Toolbar>
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
-      <LeftMobileMenu 
-        toggleDrawer={toggleDrawer} 
-        isOpen={isOpen} 
-        isAdmin={isAdmin} 
+
+      <LeftMobileMenu
+        toggleDrawer={toggleDrawer}
+        isOpen={isOpen}
+        isAdmin={isAdmin}
         isAuth={isAuth}
-        />
+      />
     </div>
   )
 }

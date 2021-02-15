@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -11,7 +11,13 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
+import Button from '@material-ui/core/Button';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+
 const useStyles = makeStyles({
+    backButton: {
+        marginBottom: '15px'
+    },
     table: {
         minWidth: 650,
     }
@@ -19,25 +25,36 @@ const useStyles = makeStyles({
 
 export const OrderDetails = () => {
     const classes = useStyles()
+    const history = useHistory()
     const [orderDetails, setOrderDetails] = useState([])
-    const history = useSelector(state => state.user.history)
+    const userHistory = useSelector(state => state.user.history)
 
     const params = useParams()
 
     useEffect(() => {
         if (params.id) {
-            history.forEach(item => {
+            userHistory.forEach(item => {
                 if (item._id === params.id) {
                     setOrderDetails(item)
                 }
             })
         }
-    }, [history, params.id])
+    }, [userHistory, params.id])
 
     if (orderDetails.length === 0) return null
     return (
         <>
-            <TableContainer component={Paper} style={{marginBottom: '20px' }}>
+            <Button
+                variant="outlined"
+                color="default"
+                className={classes.backButton}
+                startIcon={<ArrowBackIcon />}
+                onClick={() => history.push('/history')}
+            >
+                back
+            </Button>
+
+            <TableContainer component={Paper} style={{ marginBottom: '20px' }}>
                 <Table className={classes.table} aria-label="ordered detils table">
                     <TableHead>
                         <TableRow>
@@ -58,8 +75,8 @@ export const OrderDetails = () => {
                 </Table>
             </TableContainer>
 
-            <TableContainer component={Paper} style={{marginBottom: '20px' }}>
-            <Table className={classes.table} aria-label="ordered detils table">
+            <TableContainer component={Paper} style={{ marginBottom: '20px' }}>
+                <Table className={classes.table} aria-label="ordered detils table">
                     <TableHead>
                         <TableRow>
                             <TableCell style={{ color: 'blue' }}></TableCell>

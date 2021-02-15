@@ -16,7 +16,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 
 const useStyles = makeStyles({
     table: {
-        minWidth: 650,
+        // minWidth: 650,
     },
     editBtn: {
         marginRight: 10
@@ -33,7 +33,10 @@ export const Categories = () => {
     const [onEdit, setOnEdit] = useState(false)
 
     useEffect(() => {
-        dispatch(getCategories())
+        if(categories.length === 0){
+            dispatch(getCategories())
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch])
 
     const addNewCategory = () => {

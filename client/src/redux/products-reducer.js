@@ -2,7 +2,7 @@ import { imageUploadAPI, productsAPI } from "../api/products-api"
 import { notify } from "../components/mainpages/utils/notify/Notify"
 
 let initialState = {
-    products: [],
+    products: {},
     filters: {
         page: 1,
         limit: 9,
@@ -17,24 +17,47 @@ export const productsReducer = (state = initialState, action) => {
         case 'SET_PRODUCTS':
             return {
                 ...state,
-                products: [...action.products]
+                products: action.products
+            }
+        case 'SET_MORE_PRODUCTS':
+            return {
+                ...state,
+                products: {
+                    ...state.products, 
+                    result: action.products.result,
+                    products: [
+                        ...state.products.products,
+                        ...action.products.products
+                    ]
+                }
             }
         case 'SET_CHECK':
             return {
                 ...state,
-                products: [...state.products.map(product => {
-                    if(product._id === action.id) product.checked = !product.checked
-                    return product
-                })]
+                products: {
+                    ...state.products,
+                    products: [...state.products.products.map(product => {
+                        if(product._id === action.id) product.checked = !product.checked
+                        return product
+                    })]
+                }
             }
         case 'SET_CHECK_ALL':
             return {
                 ...state,
-                products: [...state.products.map(product => {
-                    if(action.isChecked) product.checked = true
-                    else product.checked = false
-                    return product
-                })]
+                products: {
+                    ...state.products,
+                    products: [...state.products.products.map(product => {
+                        if(action.isChecked) product.checked = true
+                        else product.checked = false
+                        return product
+                    })]
+                }
+            }
+        case 'SET_PAGE':
+            return {
+                ...state,
+                filters: {...state.filters, page: action.page}
             }
         case 'SET_FILTER_CATEGORY':
             return {
@@ -61,6 +84,10 @@ export const productsActions = {
         type: 'SET_PRODUCTS',
         products
     }),
+    setMoreProducts: (products) => ({
+        type: 'SET_MORE_PRODUCTS',
+        products
+    }),
     setCheck: (id) => ({
         type: 'SET_CHECK',
         id
@@ -68,6 +95,10 @@ export const productsActions = {
     setCheckAll: (isChecked) => ({
         type: 'SET_CHECK_ALL',
         isChecked
+    }),
+    setPage: (page) => ({
+        type: 'SET_PAGE',
+        page
     }),
     setFilterCategory: (category) => ({
         type: 'SET_FILTER_CATEGORY',
@@ -86,8 +117,19 @@ export const productsActions = {
 export const getProducts = () => async (dispatch, getState) => {
     const filters = getState().products.filters
     const data = await productsAPI.getProducts(filters)
-    dispatch(productsActions.setProducts(data.products))
+    dispatch(productsActions.setPage(1))
+    dispatch(productsActions.setProducts(data))
 }
+export const getMoreProducts = () => async (dispatch, getState) => {
+    const filters = getState().products.filters
+    const page = getState().products.filters.page
+    dispatch(productsActions.setPage(page + 1))
+
+    let moreFlag = true
+    const data = await productsAPI.getProducts(filters, moreFlag)
+    dispatch(productsActions.setMoreProducts(data))
+}
+
 export const createProducts = (newProduct) => async (dispatch, getState) => {
     const token = getState().auth.token
     const result = await productsAPI.createProduct(token, newProduct)
@@ -115,7 +157,7 @@ export const deleteSomeProducts = () => async (dispatch, getState) => {
     let imagePublicID = []
     let id = []
 
-    getState().products.products.forEach(product => {
+    getState().products.products.products.forEach(product => {
         if(product.checked) {
             imagePublicID.push(product.images.public_id)
             id.push(product._id)

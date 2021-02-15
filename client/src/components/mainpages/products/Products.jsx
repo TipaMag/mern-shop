@@ -1,32 +1,21 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteProduct, getProducts, productsActions } from '../../../redux/products-reducer';
+import { deleteProduct, productsActions } from '../../../redux/products-reducer';
 import { addingToCart } from '../../../redux/user-reducer';
 
 import { ProductItem } from '../utils/product_item/ProductItem';
+import { Filters } from './Filters';
 import { CheckedControl } from './CheckedControl';
 
-import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import { Filters } from './Filters';
+import { LoadMore } from './LoadMore';
 
-
-const useStyles = makeStyles(() => ({
-    productsContainer: {
-        flexGrow: 1,
-    }
-}))
 
 export const Products = () => {
-    const classes = useStyles()
     const dispatch = useDispatch()
     const isAuth = useSelector(state => state.auth.isAuth)
     const isAdmin = useSelector(state => state.user.isAdmin)
-    const products = useSelector(state => state.products.products)
-
-    useEffect(() => {
-        dispatch(getProducts())
-    }, [dispatch])
+    const products = useSelector(state => state.products.products.products)
 
     const handleAddingToCart = (product) => {
         dispatch(addingToCart(product))
@@ -34,7 +23,7 @@ export const Products = () => {
     const handleProductDelete = (id, imagePublicID) => {
         if (isAdmin) {
             let result = window.confirm('Are you sure you want to delete this product?')
-            if(result) {
+            if (result) {
                 dispatch(deleteProduct(id, imagePublicID))
             }
         }
@@ -43,15 +32,13 @@ export const Products = () => {
         dispatch(productsActions.setCheck(id))
     }
 
-    if (!products) return null
     return (
-        <div className={classes.producsContainer}>
-            <Filters/>
-            
-            {isAdmin && <CheckedControl isAdmin={isAdmin}/>}
-
+        <Grid container>
+            <Filters />
+            {isAdmin && <CheckedControl isAdmin={isAdmin} />}
             <Grid container spacing={3}>
-                {products.map((product) =>
+                {products &&
+                    products.map((product) =>
                     <ProductItem key={product._id}
                         isAdmin={isAdmin}
                         isAuth={isAuth}
@@ -62,6 +49,7 @@ export const Products = () => {
                     />
                 )}
             </Grid>
-        </div>
+            {products && <LoadMore/>}
+        </Grid>
     )
 }

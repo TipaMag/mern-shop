@@ -55,8 +55,6 @@ export const logout = () => async (dispatch) => {
     await authAPI.logout()
     dispatch({ type: 'RESET' })
     localStorage.clear()
-
-    window.location.href = '/login'
 }
 
 export const getRefreshToken = () => async (dispatch) => {

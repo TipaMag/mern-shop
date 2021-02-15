@@ -47,7 +47,7 @@ export const LeftMobileMenu = ({ isOpen, toggleDrawer, isAdmin, isAuth }) => {
                 <ListItemText primary="categories" />
               </ListItem>
               <Divider/>
-              <ListItem button>
+              <ListItem button component={RouterLink} to='/history'>
                 <ListItemIcon><HistoryIcon /></ListItemIcon>
                 <ListItemText primary="history" />
               </ListItem>
@@ -59,7 +59,7 @@ export const LeftMobileMenu = ({ isOpen, toggleDrawer, isAdmin, isAuth }) => {
                   <ListItemText primary="shop" />
                 </ListItem>
                 <Divider/>
-                <ListItem buttoncomponent={RouterLink} to='/history'>
+                <ListItem button component={RouterLink} to='/history'>
                   <ListItemIcon><HistoryIcon /></ListItemIcon>
                   <ListItemText primary="history" />
                 </ListItem>

@@ -38,7 +38,7 @@ export const ProductDetail = () => {
 
     const isAuth = useSelector(state => state.auth.isAuth)
     const isAdmin = useSelector(state => state.user.isAdmin)
-    const products = useSelector(state => state.products.products)
+    const products = useSelector(state => state.products.products.products)
 
     useEffect(() => {
         if(products.length === 0) {
@@ -86,9 +86,6 @@ export const ProductDetail = () => {
                         <Typography variant="h4" component="h2" color='textPrimary'>
                             {detailProduct.title}
                         </Typography>
-                        <Typography variant="h6" component="span" color="textSecondary">
-                            {`#id: ${detailProduct.product_id}`}
-                        </Typography>
                     </Box>
 
                     <Typography variant="h6" color='secondary' component="p" >
@@ -96,6 +93,9 @@ export const ProductDetail = () => {
                     </Typography>
                     <Typography variant="body2" color="textSecondary" component="p" paragraph>
                         {detailProduct.description}
+                    </Typography>
+                    <Typography variant="body2" component="span" color="textSecondary">
+                            {`#id: ${detailProduct.product_id}`}
                     </Typography>
                     <Typography variant="body2" color="textSecondary" component="p">
                         {`Sold: ${detailProduct.sold}`}

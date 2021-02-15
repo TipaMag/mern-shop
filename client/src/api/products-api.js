@@ -1,14 +1,17 @@
 import axios from 'axios'
 
 export const productsAPI = {
-    async getProducts(filters) {
+    async getProducts(filters, moreFlag) {
         try {
             let {page, limit, category, sort, search} = filters
+
+            page = moreFlag ? page + 1 : 1 // fix
             category = (category === 'all' || !category) ? '' : `${'category=' + category}`
+
             const { data } = await axios.get(`/api/products/?page=${page}&limit=${limit}&${category}&sort=${sort}&title[regex]=${search}`)
             return data
         } catch (err) {
-            console.log(err)
+            return err.response
         }
     },
     async createProduct(token, product) {

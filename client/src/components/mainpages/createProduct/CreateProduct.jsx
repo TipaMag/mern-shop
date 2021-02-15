@@ -79,7 +79,7 @@ export const CreateProduct = () => {
 
     const token = useSelector(state => state.auth.token)
     const categories = useSelector(state => state.categories.categories)
-    
+
     let [product, setProduct] = useState(initialProduct)
     const [onEdit, setOnEdit] = useState(false)
 
@@ -92,7 +92,7 @@ export const CreateProduct = () => {
             const res = await dispatch(createProducts(newProduct))
             if (res) setImage(false) //fix
         }
-        if(images && param.id){
+        if (images && param.id) {
             dispatch(updateProducts(param.id, newProduct))
         }
     }
@@ -130,19 +130,19 @@ export const CreateProduct = () => {
     useEffect(() => {
         if (param.id) {
             products.forEach(product => {
-                if(product._id === param.id) {
+                if (product._id === param.id) {
                     setOnEdit(true)
                     setProduct(product)
                     setImage(product.images)
-                } 
+                }
             })
         }
     }, [param.id, products])
 
     useEffect(() => {
+        if(categories.length === 0)
         dispatch(getCategories())
-    }, [dispatch])
-
+    }, [categories.length, dispatch])
 
     return (
         <Grid container spacing={3}>
@@ -169,9 +169,9 @@ export const CreateProduct = () => {
             </Grid>
 
             <Grid item xs={12} sm={12} md={6}>
-                <CreateProductForm 
-                    initialPropValues={product} 
-                    categories={categories} 
+                <CreateProductForm
+                    initialPropValues={product}
+                    categories={categories}
                     handleFormSubmit={handleFormSubmit}
                     onEdit={onEdit}
                 />

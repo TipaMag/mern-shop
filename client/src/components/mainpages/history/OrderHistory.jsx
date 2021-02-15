@@ -16,7 +16,7 @@ import { Link as RouterLink } from 'react-router-dom'
 
 const useStyles = makeStyles({
     table: {
-        minWidth: 650,
+        minWidth: 550,
     },
 })
 
@@ -26,8 +26,10 @@ export const OrderHistory = () => {
     const history = useSelector(state => state.user.history)
 
     useEffect(() => {
-        dispatch(getUserHistory())
-    }, [dispatch])
+        if(history.length === 0) {
+            dispatch(getUserHistory())
+        }
+    }, [dispatch, history.length])
     
     return (
         <>
