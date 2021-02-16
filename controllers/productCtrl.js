@@ -43,7 +43,6 @@ const productCtrl = {
     getProducts: async (req, res) => {
         try {
             const features = new APIfeatures(Product.find(), req.query).filtering().sorting().pagginating()
-
             const products = await features.query
 
             res.status(200).json({

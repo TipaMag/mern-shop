@@ -79,8 +79,9 @@ export const CreateProduct = () => {
 
     const token = useSelector(state => state.auth.token)
     const categories = useSelector(state => state.categories.categories)
+    const products = useSelector(state => state.products.products.products)
 
-    let [product, setProduct] = useState(initialProduct)
+    const [product, setProduct] = useState(initialProduct)
     const [onEdit, setOnEdit] = useState(false)
 
     const [images, setImage] = useState(false)
@@ -90,7 +91,9 @@ export const CreateProduct = () => {
         let newProduct = { ...formValues, images }
         if (images && !param.id) {
             const res = await dispatch(createProducts(newProduct))
-            if (res) setImage(false) //fix
+            if (res) { //fix
+                setImage(false)
+            } 
         }
         if (images && param.id) {
             dispatch(updateProducts(param.id, newProduct))
@@ -126,7 +129,6 @@ export const CreateProduct = () => {
         setLoading(false)
     }
 
-    const products = useSelector(state => state.products.products)
     useEffect(() => {
         if (param.id) {
             products.forEach(product => {

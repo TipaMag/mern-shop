@@ -120,10 +120,9 @@ export const getProducts = () => async (dispatch, getState) => {
     dispatch(productsActions.setPage(1))
     dispatch(productsActions.setProducts(data))
 }
-export const getMoreProducts = () => async (dispatch, getState) => {
+export const getMoreProducts = (page) => async (dispatch, getState) => {
     const filters = getState().products.filters
-    const page = getState().products.filters.page
-    dispatch(productsActions.setPage(page + 1))
+    dispatch(productsActions.setPage(page))
 
     let moreFlag = true
     const data = await productsAPI.getProducts(filters, moreFlag)

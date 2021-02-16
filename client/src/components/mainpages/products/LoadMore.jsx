@@ -12,7 +12,7 @@ export const LoadMore = () => {
     const limit = useSelector(state => state.products.filters.limit)
 
     const onLoadMore = () => {
-        dispatch(getMoreProducts())
+        dispatch(getMoreProducts(page + 1))
     }
 
     return (

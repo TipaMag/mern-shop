@@ -15,16 +15,12 @@ import { getProducts, productsActions } from '../../../redux/products-reducer';
 export const Filters = () => {
     const dispatch = useDispatch()
     const categories = useSelector(state => state.categories.categories)
-    const products = useSelector(state => state.products.products.products)
     const { category, sort, search } = useSelector(state => state.products.filters)
 
     const [localSearch, setLocalSearch] = useState('')
     
     useEffect(() => {
-
-            dispatch(getProducts())
-        
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        dispatch(getProducts())
     }, [dispatch, category, sort, search])
 
     useEffect(() => {

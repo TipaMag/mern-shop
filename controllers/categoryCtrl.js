@@ -1,4 +1,5 @@
 const Category = require("../models/categoryModel")
+const Products = require("../models/productModel")
 
 const categoryCtrl = {
   getCategories: async (req, res) => {
@@ -31,10 +32,14 @@ const categoryCtrl = {
     try {
       // if user have  role === 1 ---> admin
       // only admin can create, update and delete category
-      const category = await Category.findByIdAndDelete(req.params.id)
-      if(!category){
-        return res.status(400).json({msg: 'Сategory not found'})
-      } 
+      const category = await Category.findById(req.params.id)
+      if(!category) return res.status(400).json({msg: 'Сategory not found'})
+
+      const products = await Products.findOne({category: category.name})
+      if(products) return res.status(400).json({msg: 'Remove all products from this product category'})
+      
+      await Category.findByIdAndDelete(req.params.id)
+
       res.status(200).json({ msg: 'Category has been deleted'})
     } catch (err) {
       return res.status(500).json({ msg: err.message })
