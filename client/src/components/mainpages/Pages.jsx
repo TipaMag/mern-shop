@@ -19,7 +19,7 @@ export const Pages = () => {
     const isAdmin = useSelector(state => state.user.isAdmin)
 
     return (
-        <div style={{ marginTop: '20px', padding: '0 20px'}}>
+        <div style={{ padding: '20px 20px 0'}}>
             <Switch>
                 <Route path="/" exact component={Products} />
                 <Route path="/detail/:id" exact component={ProductDetail} />

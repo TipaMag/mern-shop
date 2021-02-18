@@ -40,6 +40,7 @@ export const Products = () => {
                 {products &&
                     products.map((product) =>
                     <ProductItem key={product._id}
+                        mainPage
                         isAdmin={isAdmin}
                         isAuth={isAuth}
                         product={product}

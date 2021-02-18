@@ -19,13 +19,16 @@ import MoreIcon from '@material-ui/icons/MoreVert'
 import Button from '@material-ui/core/Button'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
 
+import useScrollTrigger from '@material-ui/core/useScrollTrigger';
+import Slide from '@material-ui/core/Slide';
+
 import { LeftMobileMenu } from './LeftMobileMenu'
 
 
 
 const useStyles = makeStyles((theme) => ({
-  grow: {
-    flexGrow: 1,
+  headerContainer: {
+    minHeight: '64px'
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -48,6 +51,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  grow: {
+    flexGrow: 1
+  },
   navigationDesktop: {
     display: 'none',
     [theme.breakpoints.up('md')]: {
@@ -68,7 +74,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Header = () => {
+function HideOnScroll(props) {
+  const { children, window } = props;
+  // Note that you normally won't need to set the window ref as useScrollTrigger
+  // will default to window.
+  // This is only being set here because the demo is in an iframe.
+  const trigger = useScrollTrigger({ target: window ? window() : undefined })
+  return (
+    <Slide appear={false} direction="down" in={!trigger}>
+      {children}
+    </Slide>
+  );
+}
+
+export const Header = (props) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const history = useHistory()
@@ -86,25 +105,20 @@ export const Header = () => {
 
   const toggleDrawer = () => {
     setOpen(!isOpen)
-  };
-
+  }
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget)
-  };
-
+  }
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null)
-  };
-
+  }
   const handleMenuClose = () => {
     setAnchorEl(null)
     handleMobileMenuClose()
-  };
-
+  }
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget)
-  };
-
+  }
   const handleLogout = async () => {
     await dispatch(logout()) // fix
     history.push('/login')
@@ -125,7 +139,6 @@ export const Header = () => {
       <MenuItem onClick={() => { handleMenuClose(); handleLogout() }}>Log out</MenuItem>
     </Menu>
   )
-
   const mobileMenuId = 'primary-account-menu-mobile'
   const renderMobileMenu = (
     <Menu
@@ -152,93 +165,96 @@ export const Header = () => {
   )
 
   return (
-    <div className={classes.grow}>
-      <AppBar position='relative'>
-        <Toolbar>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="open drawer"
-            onClick={toggleDrawer}
-          >
-            <MenuIcon />
-          </IconButton>
+    <div className={classes.headerContainer}>
+      <HideOnScroll {...props}>
+        <AppBar>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              className={classes.menuButton}
+              color="inherit"
+              aria-label="open drawer"
+              onClick={toggleDrawer}
+            >
+              <MenuIcon />
+            </IconButton>
 
-          <Typography className={classes.title} variant="h5" noWrap component={RouterLink} to='/'>
-            Sundries shop
-          </Typography>
+            <Typography className={classes.title} variant="h5" noWrap component={RouterLink} to='/'>
+              Sundries shop
+            </Typography>
 
-          <div className={classes.grow} />
-          <div className={classes.navigationDesktop}>
-            {isAdmin ?
-              <ButtonGroup variant="contained" color="primary" aria-label="outlined primary button group">
-                <Button component={RouterLink} to='/'>products</Button>
-                <Button component={RouterLink} to='/create_product'>create product</Button>
-                <Button component={RouterLink} to='/categories'>categories</Button>
-                <Button component={RouterLink} to='/history'>history</Button>
-              </ButtonGroup> :
-              (!isAdmin & isAuth) ?
+            <div className={classes.grow} />
+            <div className={classes.navigationDesktop}>
+              {isAdmin ?
                 <ButtonGroup variant="contained" color="primary" aria-label="outlined primary button group">
-                  <Button component={RouterLink} to='/'>shop</Button>
+                  <Button component={RouterLink} to='/'>products</Button>
+                  <Button component={RouterLink} to='/create_product'>create product</Button>
+                  <Button component={RouterLink} to='/categories'>categories</Button>
                   <Button component={RouterLink} to='/history'>history</Button>
                 </ButtonGroup> :
-                <ButtonGroup variant="contained" color="primary" aria-label="outlined primary button group">
-                  <Button component={RouterLink} to='/'>shop</Button>
-                  <Button component={RouterLink} to='/login'>Login</Button>
-                  <Button component={RouterLink} to='/register'>Registration</Button>
-                </ButtonGroup>
+                (!isAdmin & isAuth) ?
+                  <ButtonGroup variant="contained" color="primary" aria-label="outlined primary button group">
+                    <Button component={RouterLink} to='/'>shop</Button>
+                    <Button component={RouterLink} to='/history'>history</Button>
+                  </ButtonGroup> :
+                  <ButtonGroup variant="contained" color="primary" aria-label="outlined primary button group">
+                    <Button component={RouterLink} to='/'>shop</Button>
+                    <Button component={RouterLink} to='/login'>Login</Button>
+                    <Button component={RouterLink} to='/register'>Registration</Button>
+                  </ButtonGroup>
+              }
+            </div>
+            {
+              user.name &&
+              <div className={classes.userName}>
+                <Typography variant="button" color='inherit' component="p">
+                  {isAdmin ? `${user.name} (admin)` : `${user.name}`}
+                </Typography>
+              </div>
             }
-          </div>
-          {
-            user.name &&
-            <div className={classes.userName}>
-              <Typography variant="button" color='inherit' component="p">
-                {isAdmin ? `${user.name} (admin)` : `${user.name}`}
-              </Typography>
-            </div>
-          }
-          {
-            !isAdmin &&
-            <div className={classes.shopCart}>
-              <IconButton aria-label="user cart" color="inherit" component={RouterLink} to='/cart'>
-                <Badge badgeContent={user.cart.length} showZero color="secondary">
-                  <ShoppingCartIcon />
-                </Badge>
-              </IconButton>
-            </div>
-          }
-          {
-            (isAuth || isAdmin) &&
-            <div className={classes.sectionDesktop}>
-              <IconButton
-                edge="end"
-                aria-label="account of current user"
-                aria-controls={menuId}
-                aria-haspopup="true"
-                onClick={handleProfileMenuOpen}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-            </div>
-          }
-          
-          {isAuth &&
-            <div className={classes.sectionMobile}>
-              <IconButton
-                aria-label="show more"
-                aria-controls={mobileMenuId}
-                aria-haspopup="true"
-                onClick={handleMobileMenuOpen}
-                color="inherit"
-              >
-                <MoreIcon />
-              </IconButton>
-            </div>
-          }
-        </Toolbar>
-      </AppBar>
+            {
+              !isAdmin &&
+              <div className={classes.shopCart}>
+                <IconButton aria-label="user cart" color="inherit" component={RouterLink} to='/cart'>
+                  <Badge badgeContent={user.cart.length} showZero color="secondary">
+                    <ShoppingCartIcon />
+                  </Badge>
+                </IconButton>
+              </div>
+            }
+            {
+              (isAuth || isAdmin) &&
+              <div className={classes.sectionDesktop}>
+                <IconButton
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={handleProfileMenuOpen}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+              </div>
+            }
+
+            {isAuth &&
+              <div className={classes.sectionMobile}>
+                <IconButton
+                  aria-label="show more"
+                  aria-controls={mobileMenuId}
+                  aria-haspopup="true"
+                  onClick={handleMobileMenuOpen}
+                  color="inherit"
+                >
+                  <MoreIcon />
+                </IconButton>
+              </div>
+            }
+          </Toolbar>
+        </AppBar>
+      </HideOnScroll>
+
       {renderMobileMenu}
       {renderMenu}
 

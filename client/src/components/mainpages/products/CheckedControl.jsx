@@ -12,7 +12,7 @@ import Button from '@material-ui/core/Button';
 const useStyles = makeStyles(() => ({
     formControl: {
         width: '100%',
-        margin: '15px 0'
+        marginBottom: '15px'
     },
     formGroup: {
         justifyContent: 'flex-end'

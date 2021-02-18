@@ -43,7 +43,7 @@ export const Filters = () => {
         
 
     return (
-        <Grid container margin="normal" spacing={2}>
+        <Grid container spacing={2} style={{marginBottom: '10px'}}>
             <Grid item xs={12} sm={6}>
                 <TextField label="Search" variant="outlined" style={{width: '100%'}}
                     value={localSearch}

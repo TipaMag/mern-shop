@@ -11,23 +11,30 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 
 
 const useStyles = makeStyles({
+    // card: {
+    //     position: 'relative',
+    // },
+    // checkBox: {
+    //     position: 'absolute',
+    //     right: 0,
+    //     zIndex: 99,
+    // },
     cardMedia: {
         padding: '10px',
         boxSizing: 'border-box',
         objectFit: 'contain',
     },
+    cardActions: {
+        justifyContent: 'space-around'
+    }
 });
 
-export const ProductItem = ({ isAdmin, isAuth, product, handleAddingToCart, handleProductDelete, handleCheck }) => {
+export const ProductItem = ({mainPage, isAdmin, product, handleAddingToCart, handleProductDelete, handleCheck }) => {
     const classes = useStyles()
 
     return (
         <Grid item xs={12} sm={6} md={4}>
-            <Card>
-                { isAdmin && 
-                    <Checkbox checked={product.checked} onChange={() => handleCheck(product._id)}/>
-                }
-                
+            <Card className={classes.card}>
                 <CardActionArea component={RouterLink} to={`/detail/${product._id}`}>
                     <CardMedia
                         className={classes.cardMedia}
@@ -51,7 +58,7 @@ export const ProductItem = ({ isAdmin, isAuth, product, handleAddingToCart, hand
                     </Typography>
                 </CardContent>
 
-                <CardActions style={{ justifyContent: 'space-around' }}>
+                <CardActions className={classes.cardActions}>
                     {
                         isAdmin ?
                             <>
@@ -64,6 +71,13 @@ export const ProductItem = ({ isAdmin, isAuth, product, handleAddingToCart, hand
                                     component={RouterLink} to={`/edit_product/${product._id}`}>
                                     edit
                                 </Button>
+                                { mainPage && 
+                                    <Checkbox
+                                        className={classes.checkBox}
+                                        checked={product.checked} 
+                                        onChange={() => handleCheck(product._id)}
+                                    />
+                                }
                             </> :
                             <>
                                 <Button variant='contained' fullWidth color='inherit' startIcon={<ShoppingCartIcon />}

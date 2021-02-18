@@ -41,10 +41,10 @@ export const ProductDetail = () => {
     const products = useSelector(state => state.products.products.products)
 
     useEffect(() => {
-        if(products.length === 0) {
+        if(!products) {
             dispatch(getProducts())
         }
-        if (params.id) {
+        if (params.id && products) {
             products.forEach(product => {
                 if (product._id === params.id) {
                     setDetailProduct(product)
@@ -56,7 +56,6 @@ export const ProductDetail = () => {
     const onAddingToCart = () => {
         dispatch(addingToCart(detailProduct))
     }
-
     const handleProductDelete = (id, imagePublicID) => {
         if (isAdmin) {
             let result = window.confirm('Are you sure you want to delete this product?')
@@ -67,7 +66,7 @@ export const ProductDetail = () => {
         }
     }
 
-    if (detailProduct.length === 0) return null
+    if (detailProduct?.length === 0) return null
     return (
         <>
             <Card className={classes.root} component={Grid} container spacing={3}>
@@ -135,7 +134,7 @@ export const ProductDetail = () => {
                 <Grid container spacing={3}>
                     {
                         products.map(product => {
-                        return (product.category === detailProduct.category) ?
+                        return (product.category === detailProduct.category && product._id !== detailProduct._id) ?
                             <ProductItem key={product._id}
                                 isAdmin={isAdmin} 
                                 isAuth={isAuth}

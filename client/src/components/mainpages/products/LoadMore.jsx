@@ -7,9 +7,8 @@ import { getMoreProducts } from '../../../redux/products-reducer';
 
 export const LoadMore = () => {
     const dispatch = useDispatch()
-    const result = useSelector(state => state.products.products.result)
-    const page = useSelector(state => state.products.filters.page)
-    const limit = useSelector(state => state.products.filters.limit)
+    const { totalCount } = useSelector(state => state.products.products)
+    const { page, limit } = useSelector(state => state.products.filters)
 
     const onLoadMore = () => {
         dispatch(getMoreProducts(page + 1))
@@ -17,7 +16,7 @@ export const LoadMore = () => {
 
     return (
         <Box width="100%" display="flex" justifyContent="center" m={3}>
-            {result < (page * limit) ? 
+            {totalCount <= (page * limit) ? 
                 '' : 
                 <Button variant="outlined" color="primary" onClick={onLoadMore}>
                     load more
