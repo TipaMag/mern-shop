@@ -4,7 +4,6 @@ class APIfeatures {
     constructor(query, queryString) {
         this.query = query
         this.queryString = queryString
-        this.totalCount = 0
     }
     filtering() {
         const queryObj = { ...this.queryString } // queryString = req.query
@@ -19,7 +18,6 @@ class APIfeatures {
         // lt = lesser than
         // gt = greater than
         this.query.find(JSON.parse(queryStr))
-        console.log('filtering: 1')
         return this
     }
     sorting() {
@@ -30,7 +28,6 @@ class APIfeatures {
         else {
             this.query = this.query.sort('-createdAt')
         }
-        console.log('sorting: 2')
         return this
     }
     pagginating() {
@@ -38,9 +35,7 @@ class APIfeatures {
         const limit = this.queryString.limit * 1 || 9
         const skip = (page - 1) * limit
 
-        this.totalCount = this.query
         this.query = this.query.skip(skip).limit(limit)
-        console.log('pagginating: 3')
         return this
     }
 }

@@ -15,9 +15,6 @@ import ClearIcon from '@material-ui/icons/Clear';
 
 
 const useStyles = makeStyles({
-    table: {
-        // minWidth: 650,
-    },
     editBtn: {
         marginRight: 10
     }
@@ -29,6 +26,7 @@ export const Categories = () => {
     const categories = useSelector(state => state.categories.categories)
 
     const [category, setCategory] = useState('')
+
     const [id, setID] = useState('')
     const [onEdit, setOnEdit] = useState(false)
 
@@ -43,7 +41,6 @@ export const Categories = () => {
         dispatch(addCategory(category))
         setCategory('')
     }
-
     const deleteCategory = (id) => {
         if (window.confirm('Are you sure you want to delete this category?')) {
             dispatch(removeCategory(id))
@@ -96,7 +93,7 @@ export const Categories = () => {
             </Box>
 
             <TableContainer component={Paper}>
-                <Table className={classes.table} aria-label="category table">
+                <Table aria-label="category table">
                     <TableHead>
                         <TableRow>
                             <TableCell style={{ color: 'blue' }}>
@@ -106,7 +103,7 @@ export const Categories = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {categories.map((category) => (
+                        {categories.map(category => (
                             <TableRow key={category._id} >
                                 <TableCell>{category.name}</TableCell>
                                 <TableCell align='right'>

@@ -7,9 +7,9 @@ const useStyles = makeStyles((theme) => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: '#fff',
-    position: 'relative',
-    width: '100%',
-    height: '100%'
+    // position: 'relative',
+    // width: '100%',
+    // height: '100%'
   },
 }));
 

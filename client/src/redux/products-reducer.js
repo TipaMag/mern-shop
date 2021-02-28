@@ -3,9 +3,10 @@ import { notify } from "../components/mainpages/utils/notify/Notify"
 
 let initialState = {
     products: {},
+    isFetching: false,
     filters: {
         page: 1,
-        limit: 9,
+        limit: 12,
         category: 'all',
         sort: '-createdAt',
         search: ''
@@ -74,6 +75,16 @@ export const productsReducer = (state = initialState, action) => {
                 ...state,
                 filters: {...state.filters, search: action.value}
             }
+        case 'SET_LIMIT':
+            return {
+                ...state,
+                filters: {...state.filters, limit: action.value}
+            }
+        case 'SET_IS_FETCHING':
+            return {
+                ...state,
+                isFetching: action.isFetching
+            }
         default:
             return state
     }
@@ -112,21 +123,35 @@ export const productsActions = {
         type: 'SET_FILTER_SEARCH',
         value
     }),
+    setLimit: (value) => ({
+        type: 'SET_LIMIT',
+        value
+    }),
+    setIsFetching: (isFetching) => ({
+        type: 'SET_IS_FETCHING',
+        isFetching
+    }),
 }
 
 export const getProducts = () => async (dispatch, getState) => {
     const filters = getState().products.filters
+    dispatch(productsActions.setIsFetching(true))
+
     const data = await productsAPI.getProducts(filters)
     dispatch(productsActions.setPage(1))
     dispatch(productsActions.setProducts(data))
+
+    dispatch(productsActions.setIsFetching(false))
 }
 export const getMoreProducts = (page) => async (dispatch, getState) => {
     const filters = getState().products.filters
+    dispatch(productsActions.setIsFetching(true))
     dispatch(productsActions.setPage(page))
 
     let moreFlag = true
     const data = await productsAPI.getProducts(filters, moreFlag)
     dispatch(productsActions.setMoreProducts(data))
+    dispatch(productsActions.setIsFetching(false))
 }
 
 export const createProducts = (newProduct) => async (dispatch, getState) => {

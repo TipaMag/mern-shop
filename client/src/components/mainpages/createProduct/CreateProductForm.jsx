@@ -65,7 +65,7 @@ export const CreateProductForm = ({initialPropValues, categories, handleFormSubm
                     name="product_id"
                     label="product_id"
                     variant="outlined"
-                    margin="normal"
+                    margin="dense"
                     disabled={onEdit}
 
                     value={formik.values.product_id}
@@ -79,7 +79,7 @@ export const CreateProductForm = ({initialPropValues, categories, handleFormSubm
                     name="title"
                     label="title"
                     variant="outlined"
-                    margin="normal"
+                    margin="dense"
 
                     value={formik.values.title}
                     onChange={formik.handleChange}
@@ -92,9 +92,9 @@ export const CreateProductForm = ({initialPropValues, categories, handleFormSubm
                     name="description"
                     label="description"
                     multiline
-                    rows={2}
+                    rows={4}
                     variant="outlined"
-                    margin="normal"
+                    margin="dense"
 
                     value={formik.values.description}
                     onChange={formik.handleChange}
@@ -107,9 +107,9 @@ export const CreateProductForm = ({initialPropValues, categories, handleFormSubm
                     name="content"
                     label="content"
                     multiline
-                    rows={6}
+                    rows={8}
                     variant="outlined"
-                    margin="normal"
+                    margin="dense"
 
                     value={formik.values.content}
                     onChange={formik.handleChange}
@@ -123,7 +123,7 @@ export const CreateProductForm = ({initialPropValues, categories, handleFormSubm
                     name="price"
                     label="price"
                     variant="outlined"
-                    margin="normal"
+                    margin="dense"
 
                     value={formik.values.price}
                     onChange={formik.handleChange}

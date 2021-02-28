@@ -15,17 +15,14 @@ import { ProductItem } from '../utils/product_item/ProductItem';
 
 
 const useStyles = makeStyles({
-    root: {
+    card: {
         display: 'flex',
         width: "100%",
         margin: '0 auto'
     },
     imageCard: {
-        objectFit: 'contain'
-    },
-    contentHeader: {
-        display: 'flex',
-        justifyContent: 'space-between'
+        objectFit: 'contain',
+        height: "300px",
     }
 });
 
@@ -69,24 +66,20 @@ export const ProductDetail = () => {
     if (detailProduct?.length === 0) return null
     return (
         <>
-            <Card className={classes.root} component={Grid} container spacing={3}>
-                <Grid item xs={12} sm={7}>
+            <Card className={classes.card} component={Grid} container spacing={3}>
+                <Grid item xs={12} sm={6}>
                     <CardMedia
                         className={classes.imageCard}
                         component="img"
                         alt={detailProduct.title}
-                        height="350"
                         image={detailProduct.images.url}
                         title={detailProduct.title}
                     />
                 </Grid>
-                <CardContent component={Grid} item xs={12} sm={5}>
-                    <Box className={classes.contentHeader}>
-                        <Typography variant="h4" component="h2" color='textPrimary'>
-                            {detailProduct.title}
-                        </Typography>
-                    </Box>
-
+                <CardContent item xs={12} sm={6} component={Grid}>
+                    <Typography variant="h4" component="h2" color='textPrimary'>
+                        {detailProduct.title}
+                    </Typography>
                     <Typography variant="h6" color='secondary' component="p" >
                         {`₴ ${detailProduct.price}`}
                     </Typography>
@@ -131,7 +124,7 @@ export const ProductDetail = () => {
                 <Typography variant="h5" component="h2" style={{margin: '10px 0'}}>
                     Related products
                 </Typography>
-                <Grid container spacing={3}>
+                <Grid container spacing={2}>
                     {
                         products.map(product => {
                         return (product.category === detailProduct.category && product._id !== detailProduct._id) ?

@@ -13,7 +13,9 @@ cloudinary.config({
 // Upload image only admin can use
 router.post('/upload', auth, authAdmin, (req, res) => {
     try {
-        if (!req.files || Object.keys(req.files).length === 0) return res.status(400).json({ msg: 'No files uploaded' })
+        if (!req.files || Object.keys(req.files).length === 0) {
+            return res.status(400).json({ msg: 'No files uploaded' })
+        } 
 
         const file = req.files.file
         if (file.size > 1024 * 1024) { // 1024*1024 = 1mb
@@ -31,7 +33,7 @@ router.post('/upload', auth, authAdmin, (req, res) => {
 
             removeTmpFile(file.tempFilePath)
 
-            res.json({ public_id: result.public_id, url: result.secure_url })
+            res.status(200).json({ public_id: result.public_id, url: result.secure_url })
         })
     } catch (err) {
         return res.status(500).json({ msg: err.message })
@@ -44,7 +46,6 @@ router.post('/destroy', auth, authAdmin, (req, res) => {
         const { public_id } = req.body
         if(!public_id) return res.status(400).json({msg: 'No image select'})
 
-        console.log(public_id)
         // cloudinary.v2.uploader.destroy( public_id, (error, result) ...  ===   delete one resource
         cloudinary.v2.api.delete_resources([...public_id], (error, result) => {
             if (error) throw error

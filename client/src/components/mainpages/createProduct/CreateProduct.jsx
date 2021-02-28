@@ -45,7 +45,10 @@ const useStyles = makeStyles((theme) => ({
         left: 0,
         right: 0,
         bottom: 0,
-        cursor: 'pointer'
+        cursor: 'pointer',
+        "&:hover": {
+            backgroundColor: '#eff8ff'
+        }
     },
     imageFileInput: {
         position: 'absolute',
@@ -147,8 +150,8 @@ export const CreateProduct = () => {
     }, [categories.length, dispatch])
 
     return (
-        <Grid container spacing={3}>
-            <Grid item xs={12} sm={12} md={6} className={classes.uploadContainer}>
+        <Grid container spacing={2}>
+            <Grid item xs={12} md={6} className={classes.uploadContainer}>
                 <Paper className={classes.imageContainer}>
                     {loading ? <BackdropLoader />
                         : <>
@@ -170,7 +173,7 @@ export const CreateProduct = () => {
                 </Paper>
             </Grid>
 
-            <Grid item xs={12} sm={12} md={6}>
+            <Grid item xs={12} md={6}>
                 <CreateProductForm
                     initialPropValues={product}
                     categories={categories}

@@ -18,8 +18,10 @@ export const Pages = () => {
     const isAuth = useSelector(state => state.auth.isAuth)
     const isAdmin = useSelector(state => state.user.isAdmin)
 
+    // console.log('pages rerender')
+
     return (
-        <div style={{ padding: '20px 20px 0'}}>
+        <div style={{ padding: '20px 15px 0'}}>
             <Switch>
                 <Route path="/" exact component={Products} />
                 <Route path="/detail/:id" exact component={ProductDetail} />

@@ -9,13 +9,13 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-// import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { changeQuantity, clearCart, removeFromCart } from '../../../redux/user-reducer';
 
 import { PayPalBtn } from './PayPal';
 
 import { paymentsAPI } from '../../../api/payment-api';
+import { notify } from '../utils/notify/Notify';
 
 const useStyles = makeStyles({
     cartContainer: {
@@ -66,7 +66,7 @@ export const Cart = () => {
         const {paymentID, address} = payment
 
         const result = await paymentsAPI.createPayment(token, cart, paymentID, address)
-        console.log(result.data.msg)
+        notify(result.data.msg)
         dispatch(clearCart())
     }
 
